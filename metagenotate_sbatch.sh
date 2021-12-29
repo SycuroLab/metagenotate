@@ -1,17 +1,17 @@
 #!/bin/bash
 
-#SBATCH --job-name="metassemble_sbatch"
+#SBATCH --job-name="metagenotate_sbatch"
 #SBATCH --partition=synergy
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --time=2-00:00:00
 #SBATCH --mem=5G
-#SBATCH --error=metassemble_run.%J.err
-#SBATCH --output=metassemble_run.%J.out
+#SBATCH --error=metagenotate_run.%J.err
+#SBATCH --output=metagenotate_run.%J.out
 
 log_dir="$(pwd)"
-log_file="logs/metassemble-analysis.log.txt"
+log_file="logs/metagenotate-analysis.log.txt"
 num_jobs=60
 
 echo "started at: `date`"
@@ -35,7 +35,7 @@ cp $list_files $snakemake_file_dir
 cp Snakefile $snakemake_file_dir
 cp config.yaml $snakemake_file_dir
 cp cluster.json $snakemake_file_dir
-cp metassemble_sbatch.sh $snakemake_file_dir 
+cp metagenotate_sbatch.sh $snakemake_file_dir 
 
 cp -rf logs $snakemake_file_dir
 cp -rf utils $snakemake_file_dir

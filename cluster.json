@@ -2,7 +2,7 @@
   "__default__" :
   {
     "name": "metaphlan.{rule}.{wildcards}",
-    "partition": "synergy",
+    "partition": "cpu2019",
     "nodes": 1,
     "ntasks": 1,
     "cpus-per-task": 14,
@@ -10,21 +10,5 @@
     "mem" : 60G,
     "output" : "logs/{rule}.{wildcards}.out",
     "error" : "logs/{rule}.{wildcards}.err"
-  },
-
-  "mergeprofiles" :
-  {
-    "time" : "02:00:00"
-  },
-  
-  "metaphlan" :
-  {
-    "time" : "02:00:00"
-  },
-
-  "heatmap" :
-  {
-    "time" : "02:00:00"
-  },
-
+  }
 }
