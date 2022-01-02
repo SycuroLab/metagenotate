@@ -1,14 +1,25 @@
 {
   "__default__" :
   {
-    "name": "metaphlan.{rule}.{wildcards}",
-    "partition": "cpu2019",
+    "name": "metagenotate.{rule}.{wildcards}",
+    "partition": "cpu2019,cpu2021",
     "nodes": 1,
     "ntasks": 1,
     "cpus-per-task": 14,
-    "time" : "02:00:00",
-    "mem" : 60G,
+    "time" : "2-00:00:00",
+    "mem" : 180G,
     "output" : "logs/{rule}.{wildcards}.out",
     "error" : "logs/{rule}.{wildcards}.err"
-  }
+  },
+  "rename_metawrap_assembly_file" :
+  {
+
+    "cpus-per-task" : 1,
+    "time" : "1-00:00:00",
+    "mem" : 5G,
+
+  },
+
+
+
 }

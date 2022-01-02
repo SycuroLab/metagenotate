@@ -27,12 +27,23 @@ assembler_threads: 14
 min_contig_length: 500
 
 # Memory in GB.
-memory_in_gb: 60
+memory_in_gb: 180
 
 ## metawrap binning parameters.
 
 # Number of threads for the metawrap binning module.
 binning_threads: 14
+
+## metawrap refinement parameters.
+
+# Number of threads for the metawrap bin_refinement module.
+bin_refinement_threads: 14
+
+# Completeness threshold to filter MAGs (completeness >= completeness_thresh)
+completeness_thresh: 50
+
+# Contamination threshold to filter MAGs. (completeness >= completeness_thresh)
+contamination_thresh: 10
 
 
 
