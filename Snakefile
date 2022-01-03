@@ -24,9 +24,15 @@ rule all:
         expand(config["output_dir"]+"/{sample}/assembly/metaspades/scaffolds.fasta",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/final_assembly.fasta",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/{sample}_metagenome.fasta",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/assembly/quast/transposed_report.tsv",sample=SAMPLES),
+#        expand(config["output_dir"]+"/{sample}/assembly/prokka/{sample}_metagenome.fna",sample=SAMPLES),
+#        expand(config["output_dir"]+"/{sample}/assembly/prokka/{sample}_metagenome.gff",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/initial_binning/metabat2_bins/bin.1.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/initial_binning/maxbin2_bins/bin.0.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/initial_binning/concoct_bins/bin.0.fa",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/bin_refinement/metabat2_bins/bin.1.fa",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/bin_refinement/maxbin2_bins/bin.0.fa",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/bin_refinement/concoct_bins/bin.0.fa",sample=SAMPLES)
 
 rule metawrap_assembly:
     input:
@@ -57,7 +63,31 @@ rule rename_metawrap_assembly_file:
     shell:
         "cp {input.metagenome_final_assembly_file} {output.renamed_metagenome_assembly_file}"
 
+rule quast_assembly:
+    input:
+        renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
+    output:
+        quast_transposed_report_file = os.path.join(config["output_dir"],"{sample}","assembly","quast","transposed_report.tsv")
+    params:
+        assembly_quast_dir = os.path.join(config["output_dir"],"{sample}","assembly","quast"),
+        threads = config["quast_threads"]
+    conda: "utils/envs/quast_env.yaml"
+    shell:
+       "quast.py --output-dir {params.assembly_quast_dir} --threads {params.threads} {input.renamed_metagenome_assembly_file}"
 
+#rule prokka_assembly:
+#    input:
+#        renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
+#    output:
+#        prokka_fna_file = os.path.join(config["output_dir"],"{sample}","assembly","prokka","{sample}_metagenome.fna"),
+#        prokka_gff_file = os.path.join(config["output_dir"],"{sample}","assembly","prokka","{sample}_metagenome.gff")
+#    params:
+#        assembly_prokka_dir = os.path.join(config["output_dir"],"{sample}","assembly","prokka"),
+#        threads = config["prokka_threads"]
+#    conda: "utils/envs/prokka_env.yaml"
+#    shell:
+#       "python utils/scripts/prokka.py --genome_fasta_infile {input.renamed_metagenome_assembly_file} --num_cpus {params.threads} --metagenome true --output_dir {params.assembly_prokka_dir}"
+ 
 rule metawrap_binning:
     input:
          renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
@@ -80,8 +110,11 @@ rule metawrap_bin_refinement:
          concoct_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct_bins","bin.0.fa")
 
     output:
-         sample_bin_refinement_dir = os.path.join(config["output_dir"],"{sample}","initial_binning"),
+         metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","metabat2_bins","bin.1.fa"),
+         maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","maxbin2_bins","bin.0.fa"),
+         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","concoct_bins","bin.0.fa")
     params:
+         sample_bin_refinement_dir = os.path.join(config["output_dir"],"{sample}","bin_refinement"),
          threads = config["bin_refinement_threads"],
          metabat2_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2_bins"),
          maxbin2_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_bins"),
@@ -90,5 +123,5 @@ rule metawrap_bin_refinement:
          contamination_thresh = config["contamination_thresh"]
     conda: "utils/envs/metawrap_env.yaml"
     shell:
-         "metawrap bin_refinement -o {output.sample_bin_refinement_dir} -t {params.threads} -A {params.metabat2_bins_dir} -B {params.maxbin2_bins_dir} -C {params.concoct_bins_dir} -c {params.completeness_thresh} -x {params.contamination_thresh}"
+         "metawrap bin_refinement -o {params.sample_bin_refinement_dir} -t {params.threads} -A {params.metabat2_bins_dir} -B {params.maxbin2_bins_dir} -C {params.concoct_bins_dir} -c {params.completeness_thresh} -x {params.contamination_thresh}"
 

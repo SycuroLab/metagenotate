@@ -29,21 +29,32 @@ min_contig_length: 500
 # Memory in GB.
 memory_in_gb: 180
 
+## metagenome quast parameters.
+
+# Number of threads for quast metagenome assembly rule.
+quast_threads: 14
+
+## metagenome prokka parameters.
+
+# Number of threads for prokka  metagenome assembly rule.
+prokka_threads: 14
+
 ## metawrap binning parameters.
 
 # Number of threads for the metawrap binning module.
 binning_threads: 14
 
-## metawrap refinement parameters.
-
+## metawrap bin_refinement parameters.
+#
 # Number of threads for the metawrap bin_refinement module.
 bin_refinement_threads: 14
 
 # Completeness threshold to filter MAGs (completeness >= completeness_thresh)
 completeness_thresh: 50
 
-# Contamination threshold to filter MAGs. (completeness >= completeness_thresh)
+# Contamination threshold to filter MAGs. (contamination >= contamination_thresh)
 contamination_thresh: 10
+
 
 
 
