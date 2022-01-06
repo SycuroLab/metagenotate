@@ -34,10 +34,21 @@ memory_in_gb: 180
 # Number of threads for quast metagenome assembly rule.
 quast_threads: 14
 
-## metagenome prokka parameters.
+##  prokka parameters.
 
 # Number of threads for prokka  metagenome assembly rule.
 prokka_threads: 14
+
+## metaerg parameters.
+
+# metaerg database path.
+metaerg_database_path: "/bulk/IMCshared_bulk/shared/dbs/metaerg_db/db"
+
+# singularity working directories.
+working_dirs: ["/work","/bulk"]
+
+metaerg_threads: 14
+
 
 ## metawrap binning parameters.
 

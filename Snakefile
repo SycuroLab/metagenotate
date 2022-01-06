@@ -25,8 +25,9 @@ rule all:
         expand(config["output_dir"]+"/{sample}/assembly/final_assembly.fasta",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/{sample}_metagenome.fasta",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/quast/transposed_report.tsv",sample=SAMPLES),
-#        expand(config["output_dir"]+"/{sample}/assembly/prokka/{sample}_metagenome.fna",sample=SAMPLES),
-#        expand(config["output_dir"]+"/{sample}/assembly/prokka/{sample}_metagenome.gff",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/assembly/prokka/prokka_annotations/{sample}_metagenome.fna",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/assembly/prokka/prokka_annotations/{sample}_metagenome.gff",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/assembly/metaerg/data/all.gff",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/initial_binning/metabat2_bins/bin.1.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/initial_binning/maxbin2_bins/bin.0.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/initial_binning/concoct_bins/bin.0.fa",sample=SAMPLES),
@@ -75,18 +76,32 @@ rule quast_assembly:
     shell:
        "quast.py --output-dir {params.assembly_quast_dir} --threads {params.threads} {input.renamed_metagenome_assembly_file}"
 
-#rule prokka_assembly:
-#    input:
-#        renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
-#    output:
-#        prokka_fna_file = os.path.join(config["output_dir"],"{sample}","assembly","prokka","{sample}_metagenome.fna"),
-#        prokka_gff_file = os.path.join(config["output_dir"],"{sample}","assembly","prokka","{sample}_metagenome.gff")
-#    params:
-#        assembly_prokka_dir = os.path.join(config["output_dir"],"{sample}","assembly","prokka"),
-#        threads = config["prokka_threads"]
-#    conda: "utils/envs/prokka_env.yaml"
-#    shell:
-#       "python utils/scripts/prokka.py --genome_fasta_infile {input.renamed_metagenome_assembly_file} --num_cpus {params.threads} --metagenome true --output_dir {params.assembly_prokka_dir}"
+rule prokka_assembly:
+    input:
+        renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
+    output:
+        prokka_fna_file = os.path.join(config["output_dir"],"{sample}","assembly","prokka","prokka_annotations","{sample}_metagenome.fna"),
+        prokka_gff_file = os.path.join(config["output_dir"],"{sample}","assembly","prokka","prokka_annotations","{sample}_metagenome.gff")
+    params:
+        assembly_prokka_dir = os.path.join(config["output_dir"],"{sample}","assembly","prokka"),
+        threads = config["prokka_threads"]
+    conda: "utils/envs/prokka_env.yaml"
+    shell:
+       "python utils/scripts/prokka.py --genome_fasta_infile {input.renamed_metagenome_assembly_file} --num_cpus {params.threads} --metagenome true --output_dir {params.assembly_prokka_dir}"
+
+rule metaerg_assembly:
+    input:
+        renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
+    output:
+#        metaerg_fna_file = os.path.join(config["output_dir"],"{sample}","assembly","metaerg","{sample}_metagenome.fna"),
+        metaerg_gff_file = os.path.join(config["output_dir"],"{sample}","assembly","metaerg","data","all.gff")
+    params:
+        assembly_metaerg_dir = os.path.join(config["output_dir"],"{sample}","assembly","metaerg"),
+        metaerg_database_path = config["metaerg_database_path"],
+        locustag = "{sample}_metagenome",
+        threads = config["metaerg_threads"]
+    shell:
+       "singularity run -H $HOME -B {params.metaerg_database_path}:/NGStools/metaerg/db -B /work:/work -B /bulk:/bulk /global/software/singularity/images/software/metaerg2.sif /NGStools/metaerg/bin/metaerg.pl --mincontiglen 200 --gcode 11 --gtype meta --minorflen 180 --cpus {params.threads} --evalue 1e-05 --identity 20 --coverage 70 --locustag {params.locustag} --force --outdir {params.assembly_metaerg_dir} {input.renamed_metagenome_assembly_file}"
  
 rule metawrap_binning:
     input:
@@ -123,5 +138,6 @@ rule metawrap_bin_refinement:
          contamination_thresh = config["contamination_thresh"]
     conda: "utils/envs/metawrap_env.yaml"
     shell:
+         "checkm data setRoot /bulk/IMCshared_bulk/shared/dbs/checkm_db;"
          "metawrap bin_refinement -o {params.sample_bin_refinement_dir} -t {params.threads} -A {params.metabat2_bins_dir} -B {params.maxbin2_bins_dir} -C {params.concoct_bins_dir} -c {params.completeness_thresh} -x {params.contamination_thresh}"
 
