@@ -103,41 +103,41 @@ rule metaerg_assembly:
     shell:
        "singularity run -H $HOME -B {params.metaerg_database_path}:/NGStools/metaerg/db -B /work:/work -B /bulk:/bulk /global/software/singularity/images/software/metaerg2.sif /NGStools/metaerg/bin/metaerg.pl --mincontiglen 200 --gcode 11 --gtype meta --minorflen 180 --cpus {params.threads} --evalue 1e-05 --identity 20 --coverage 70 --locustag {params.locustag} --force --outdir {params.assembly_metaerg_dir} {input.renamed_metagenome_assembly_file}"
  
-rule metawrap_binning:
-    input:
-         renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
-    output:
-         metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2_bins","bin.1.fa"),
-         maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_bins","bin.0.fa"),
-         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct_bins","bin.0.fa")
-    params:
-         sample_initial_binning_dir = os.path.join(config["output_dir"],"{sample}","initial_binning"),
-         threads = config["binning_threads"],
-         fastq_read12 = os.path.join(config["input_dir"],"{sample}*fastq")
-    conda: "utils/envs/metawrap_env.yaml"
-    shell:
-         "metawrap binning -o {params.sample_initial_binning_dir} -t {params.threads} -a {input.renamed_metagenome_assembly_file} --metabat2 --maxbin2 --concoct {params.fastq_read12}"
+#rule metawrap_binning:
+#    input:
+#         renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
+#    output:
+#         metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2_bins","bin.1.fa"),
+#         maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_bins","bin.0.fa"),
+#         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct_bins","bin.0.fa")
+#    params:
+#         sample_initial_binning_dir = os.path.join(config["output_dir"],"{sample}","initial_binning"),
+#         threads = config["binning_threads"],
+#         fastq_read12 = os.path.join(config["input_dir"],"{sample}*fastq")
+#    conda: "utils/envs/metawrap_env.yaml"
+#    shell:
+#         "metawrap binning -o {params.sample_initial_binning_dir} -t {params.threads} -a {input.renamed_metagenome_assembly_file} --metabat2 --maxbin2 --concoct {params.fastq_read12}"
 
-rule metawrap_bin_refinement:
-    input:
-         metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2_bins","bin.1.fa"),
-         maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_bins","bin.0.fa"),
-         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct_bins","bin.0.fa")
-
-    output:
-         metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","metabat2_bins","bin.1.fa"),
-         maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","maxbin2_bins","bin.0.fa"),
-         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","concoct_bins","bin.0.fa")
-    params:
-         sample_bin_refinement_dir = os.path.join(config["output_dir"],"{sample}","bin_refinement"),
-         threads = config["bin_refinement_threads"],
-         metabat2_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2_bins"),
-         maxbin2_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_bins"),
-         concoct_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct_bins"),
-         completeness_thresh = config["completeness_thresh"],
-         contamination_thresh = config["contamination_thresh"]
-    conda: "utils/envs/metawrap_env.yaml"
-    shell:
-         "checkm data setRoot /bulk/IMCshared_bulk/shared/dbs/checkm_db;"
-         "metawrap bin_refinement -o {params.sample_bin_refinement_dir} -t {params.threads} -A {params.metabat2_bins_dir} -B {params.maxbin2_bins_dir} -C {params.concoct_bins_dir} -c {params.completeness_thresh} -x {params.contamination_thresh}"
+#rule metawrap_bin_refinement:
+#    input:
+#         metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2_bins","bin.1.fa"),
+#         maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_bins","bin.0.fa"),
+#         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct_bins","bin.0.fa")
+#
+#    output:
+#         metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","metabat2_bins","bin.1.fa"),
+#         maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","maxbin2_bins","bin.0.fa"),
+#         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","concoct_bins","bin.0.fa")
+#    params:
+#         sample_bin_refinement_dir = os.path.join(config["output_dir"],"{sample}","bin_refinement"),
+#         threads = config["bin_refinement_threads"],
+#         metabat2_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2_bins"),
+#         maxbin2_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_bins"),
+#         concoct_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct_bins"),
+#         completeness_thresh = config["completeness_thresh"],
+#         contamination_thresh = config["contamination_thresh"]
+#    conda: "utils/envs/metawrap_env.yaml"
+#    shell:
+#         "checkm data setRoot /bulk/IMCshared_bulk/shared/dbs/checkm_db;"
+#         "metawrap bin_refinement -o {params.sample_bin_refinement_dir} -t {params.threads} -A {params.metabat2_bins_dir} -B {params.maxbin2_bins_dir} -C {params.concoct_bins_dir} -c {params.completeness_thresh} -x {params.contamination_thresh}"
 
