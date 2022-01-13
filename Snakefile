@@ -1,5 +1,5 @@
 # ***************************************
-# * Snakefile for met assemble pipeline *
+# * Snakefile for metagenotate pipeline *
 # ***************************************
 
 # **** Variables ****
@@ -37,7 +37,9 @@ rule all:
         expand(config["output_dir"]+"/{sample}/bin_refinement/maxbin2_bins/bin.0.fa",sample=SAMPLES),
 #        expand(config["output_dir"]+"/{sample}/bin_refinement/concoct_bins/bin.0.fa",sample=SAMPLES)
         expand(config["output_dir"]+"/{sample}/bin_refinement/metawrap_" + str(config["completeness_thresh"]) + "_" + str(config["contamination_thresh"]) + "_bins/bin.1.fa",sample=SAMPLES),
-        expand(config["output_dir"]+"/{sample}/gtdbtk_bin_classification/{sample}_bin.1/{sample}_bin.1.fa",sample=SAMPLES)
+        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1.fa",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/quast/transposed_report.tsv",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/gtdbtk/gtdbtk.bac120.summary.tsv",sample=SAMPLES)
 
 rule metawrap_assembly:
     input:
@@ -61,12 +63,8 @@ rule rename_metawrap_assembly_file:
         metagenome_final_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","final_assembly.fasta")    
     output:
         renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
-    params:
-        threads = config["binning_threads"],
-        fastq_read12 = os.path.join(config["input_dir"],"{sample}*fastq")
-    conda: "utils/envs/metawrap_env.yaml"
     shell:
-        "cp {input.metagenome_final_assembly_file} {output.renamed_metagenome_assembly_file}"
+        "ln -s {input.metagenome_final_assembly_file} {output.renamed_metagenome_assembly_file}"
 
 rule quast_assembly:
     input:
@@ -150,19 +148,46 @@ rule metawrap_bin_refinement:
 #         "metawrap bin_refinement -o {params.sample_bin_refinement_dir} -t {params.threads} -A {params.metabat2_bins_dir} -B {params.maxbin2_bins_dir} -C {params.concoct_bins_dir} -c {params.completeness_thresh} -x {params.contamination_thresh}"
          "metawrap bin_refinement -o {params.sample_bin_refinement_dir} -t {params.threads} -A {params.metabat2_bins_dir} -B {params.maxbin2_bins_dir} -c {params.completeness_thresh} -x {params.contamination_thresh}"
 
-#rule quast_bin_refinement:
-#    input:
-#        renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
-#    output:
-#        quast_transposed_report_file = os.path.join(config["output_dir"],"{sample}","assembly","quast","transposed_report.tsv")
-#    params:
-#        assembly_quast_dir = os.path.join(config["output_dir"],"{sample}","assembly","quast"),
-#        threads = config["quast_threads"]
-#    conda: "utils/envs/quast_env.yaml"
-#    shell:
-#       "quast.py --output-dir {params.assembly_quast_dir} --threads {params.threads} {input.renamed_metagenome_assembly_file}"
+rule rename_refined_bin_file:
+    input:
+        refined_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins"]), "bin.1.fa") 
+    output:
+        renamed_refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
+    params:
+        metawrap_bin_refinement_dir = os.path.join(config["output_dir"],"{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins"])),
+        refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
+        sample_name = "{sample}",
+    shell:  
+       "for bin_file in $(ls {params.metawrap_bin_refinement_dir} | grep \"\.fa\"); "
+       "do echo $bin_file; "
+       "filename=$(basename $bin_file \".fa\"); "
+       "renamed_refined_bin_file=\"{params.refined_bins_dir}/{params.sample_name}_$filename.fa\"; "
+       "ln -s {params.metawrap_bin_refinement_dir}/$bin_file $renamed_refined_bin_file; "
+       "done"
 
-#rule prokka_bin_refinement:
+rule quast_refined_bins:
+    input:
+        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
+    output:
+        quast_transposed_report_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1", "quast","transposed_report.tsv")
+    params:
+        refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
+        threads = config["quast_threads"]
+    conda: "utils/envs/quast_env.yaml"
+    shell:
+       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
+       "do echo $bin_file;"
+       "filename=$(basename $bin_file \".fa\"); "
+       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
+       "mkdir -p $bin_dir; "
+       "quast_bin_dir=\"$bin_dir/quast\"; "
+       "mkdir -p $quast_bin_dir"
+       "refined_bin_file={params.refined_bins_dir}/$bin_file; "
+       "echo \"quast.py --output-dir $quast_bin_dir --threads {params.threads} $refined_bin_file\"; "
+       "quast.py --output-dir $quast_bin_dir --threads {params.threads} $refined_bin_file; "       
+       "done"
+
+# rule prokka_refined_bins:
 #    input:
 #        renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
 #    output:
@@ -173,9 +198,9 @@ rule metawrap_bin_refinement:
 #        threads = config["prokka_threads"]
 #    conda: "utils/envs/prokka_env.yaml"
 #    shell:
-#       "python utils/scripts/prokka.py --genome_fasta_infile {input.renamed_metagenome_assembly_file} --num_cpus {params.threads} --metagenome true --output_dir {params.assembly_prokka_dir}"
+#       "prokka --metagenome --outdir {params.prokka_assembly_dir} --prefix {params.prefix} {input.renamed_metagenome_assembly_file} --cpus {params.threads} --rfam 1 --force"
 
-#rule metaerg_bin_refinement:
+#rule metaerg_refined_bins:
 #    input:
 #        renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
 #    output:
@@ -191,22 +216,24 @@ rule metawrap_bin_refinement:
 
 rule gtdbtk_refined_bins:
     input:
-        metawrap_refined_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins"]), "bin.1.fa") 
+        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa") 
     output:
-        gtdbtk_refined_bin_file = os.path.join(config["output_dir"],"{sample}","gtdbtk_bin_classification","{sample}_bin.1","{sample}_bin.1.fa")
+        gtdbtk_refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","gtdbtk","gtdbtk.bac120.summary.tsv")
     params:
-        gtdbtk_refined_bin_dir = os.path.join(config["output_dir"],"{sample}","gtdbtk_bin_classification"),
-        metawrap_bin_refinement_dir = os.path.join(config["output_dir"],"{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins"])),
-        sample_name = "{sample}",
-	threads = config["gtdbtk_threads"]
+       refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
+       gtdbtk_data_path = config["gtdbtk_database_path"],
+       threads = config["gtdbtk_threads"]
     conda: "utils/envs/gtdbtk_env.yaml"
     shell:
-       "for file in $(ls {params.metawrap_bin_refinement_dir} | grep \"\.fa\"); "
-       "do echo $file; "
-       "filename=$(basename $file \".fa\"); "
-       "gtdbtk_bin_dir=\"{params.gtdbtk_refined_bin_dir}/{params.sample_name}_$filename\"; "
+       "GTDBTK_DATA_PATH=\"{params.gtdbtk_data_path}\"; "       
+       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
+       "do echo $bin_file;"
+       "filename=$(basename $bin_file \".fa\"); "
+       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
+       "mkdir -p $bin_dir; "
+       "gtdbtk_bin_dir=\"$bin_dir/gtdbtk\"; "
        "mkdir -p $gtdbtk_bin_dir; "
-       "cp {params.metawrap_bin_refinement_dir}/$file \"$gtdbtk_bin_dir/{params.sample_name}_$filename.fa\"; "
-       "GTDBTK_DATA_PATH=\"/bulk/IMCshared_bulk/shared/dbs/gtdbtk-1.5.0/db\"; "
+       "ln -s {params.refined_bins_dir}/$bin_file $gtdbtk_bin_dir/$bin_file; "
        "gtdbtk classify_wf --genome_dir $gtdbtk_bin_dir --extension \"fa\" --cpus {params.threads} --out_dir $gtdbtk_bin_dir; "
        "done"
+

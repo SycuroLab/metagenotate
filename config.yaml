@@ -71,3 +71,6 @@ checkm_database_path: "/bulk/IMCshared_bulk/shared/dbs/checkm_db"
 
 ## GTDB-tk parameters.
 gtdbtk_threads: 14
+
+gtdbtk_database_path: "/bulk/IMCshared_bulk/shared/dbs/gtdbtk-1.5.0/db"
+
