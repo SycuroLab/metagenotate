@@ -1,5 +1,5 @@
 # ***************************************
-# * Parameters for metassemble pipeline *
+# * Parameters for metagenotate pipeline *
 # ***************************************
 
 #list_files: "/work/sycuro_lab/kevin/tkg_pilot_project_2021/scripts/metawrap_job_arrays/KG_files.txt"
@@ -67,5 +67,7 @@ completeness_thresh: 50
 contamination_thresh: 10
 
 
+checkm_database_path: "/bulk/IMCshared_bulk/shared/dbs/checkm_db"
 
-
+## GTDB-tk parameters.
+gtdbtk_threads: 14

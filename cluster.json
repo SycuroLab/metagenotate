@@ -27,7 +27,14 @@
     "mem" : 5G,
 
   },
+  "gtdbtk_refined_bins" :
+  {
+    "partition": "synergy",
+    "cpus-per-task" : 14,
+    "time" : "2-00:00:00",
+    "mem" : 0,
 
+  },
 
 
 }
