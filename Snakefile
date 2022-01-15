@@ -30,15 +30,21 @@ rule all:
         expand(config["output_dir"]+"/{sample}/assembly/prokka/{sample}_metagenome.fna",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/prokka/{sample}_metagenome.gff",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/metaerg/data/all.gff",sample=SAMPLES),
-        expand(config["output_dir"]+"/{sample}/initial_binning/metabat2_bins/bin.1.fa",sample=SAMPLES),
-        expand(config["output_dir"]+"/{sample}/initial_binning/maxbin2_bins/bin.0.fa",sample=SAMPLES),
-#        expand(config["output_dir"]+"/{sample}/initial_binning/concoct_bins/bin.0.fa",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/initial_binning/metabat2/metabat2_bins/bin.1.fa",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/initial_binning/maxbin2/maxbin2_bins/bin.0.fa",sample=SAMPLES),
+
+#        expand(config["output_dir"]+"/{sample}/initial_binning/concoct/concoct_bins/bin.0.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/bin_refinement/metabat2_bins/bin.1.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/bin_refinement/maxbin2_bins/bin.0.fa",sample=SAMPLES),
-#        expand(config["output_dir"]+"/{sample}/bin_refinement/concoct_bins/bin.0.fa",sample=SAMPLES)
+
+#        expand(config["output_dir"]+"/{sample}/bin_refinement/concoct_bins/bin.0.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/bin_refinement/metawrap_" + str(config["completeness_thresh"]) + "_" + str(config["contamination_thresh"]) + "_bins/bin.1.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/quast/transposed_report.tsv",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/prokka/{sample}_bin.1.fna",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/prokka/{sample}_bin.1.gff",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/metaerg/data/all.gff",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/checkm/checkm.tsv",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/gtdbtk/gtdbtk.bac120.summary.tsv",sample=SAMPLES)
 
 rule metawrap_assembly:
@@ -107,39 +113,64 @@ rule metaerg_assembly:
     shell:
        "singularity run -H $HOME -B {params.metaerg_database_path}:/NGStools/metaerg/db -B /work:/work -B /bulk:/bulk /global/software/singularity/images/software/metaerg2.sif /NGStools/metaerg/bin/metaerg.pl --mincontiglen 200 --gcode 11 --gtype meta --minorflen 180 --cpus {params.threads} --evalue 1e-05 --identity 20 --coverage 70 --locustag {params.locustag} --force --outdir {params.assembly_metaerg_dir} {input.renamed_metagenome_assembly_file}"
  
-rule metawrap_binning:
+rule metawrap_metabat2_binning:
     input:
          renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
     output:
-         metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2_bins","bin.1.fa"),
-         maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_bins","bin.0.fa"),
-#         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct_bins","bin.0.fa")
+         metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2","metabat2_bins","bin.1.fa"),
     params:
-         sample_initial_binning_dir = os.path.join(config["output_dir"],"{sample}","initial_binning"),
+         sample_initial_binning_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2"),
          threads = config["binning_threads"],
          fastq_read12 = os.path.join(config["input_dir"],"{sample}*fastq")
     conda: "utils/envs/metawrap_env.yaml"
     shell:
-         "metawrap binning -o {params.sample_initial_binning_dir} -t {params.threads} -a {input.renamed_metagenome_assembly_file} --metabat2 --maxbin2 --concoct {params.fastq_read12}"
+         "metawrap binning -o {params.sample_initial_binning_dir} -t {params.threads} -a {input.renamed_metagenome_assembly_file} --metabat2 {params.fastq_read12}"
+
+rule metawrap_maxbin2_binning:
+    input:
+         renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
+    output:
+         maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2","maxbin2_bins","bin.0.fa")
+    params:
+         sample_initial_binning_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2"),
+         threads = config["binning_threads"],
+         fastq_read12 = os.path.join(config["input_dir"],"{sample}*fastq")
+    conda: "utils/envs/metawrap_env.yaml"
+    shell:
+         "metawrap binning -o {params.sample_initial_binning_dir} -t {params.threads} -a {input.renamed_metagenome_assembly_file} --maxbin2 {params.fastq_read12}"
+
+#rule metawrap_concoct_binning:
+#    input:
+#         renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
+#    output:
+#         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct","concoct_bins","bin.0.fa")
+#    params:
+#         sample_initial_binning_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct"),
+#         threads = config["binning_threads"],
+#         fastq_read12 = os.path.join(config["input_dir"],"{sample}*fastq")
+#    conda: "utils/envs/metawrap_env.yaml"
+#    shell:
+#         "metawrap binning -o {params.sample_initial_binning_dir} -t {params.threads} -a {input.renamed_metagenome_assembly_file} --concoct {params.fastq_read12}"
 
 rule metawrap_bin_refinement:
     input:
-         metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2_bins","bin.1.fa"),
-         maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_bins","bin.0.fa"),
-#         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct_bins","bin.0.fa")
+         metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2","metabat2_bins","bin.1.fa"),
+         maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2","maxbin2_bins","bin.0.fa"),
+#         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct","concoct_bins","bin.0.fa")
 
     output:
          metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","metabat2_bins","bin.1.fa"),
          maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","maxbin2_bins","bin.0.fa"),
-         metawrap_refine_bin_stats = os.path.join(config["output_dir"],"{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins.stats"]))
-#         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","concoct_bins","bin.0.fa")
+#         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","concoct_bins","bin.0.fa"),
+         metawrap_refine_bin_stats = os.path.join(config["output_dir"],"{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins.stats"])),
+         refined_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins"]), "bin.1.fa"),
     params:
          checkm_database = config["checkm_database_path"],
          sample_bin_refinement_dir = os.path.join(config["output_dir"],"{sample}","bin_refinement"),
          threads = config["bin_refinement_threads"],
-         metabat2_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2_bins"),
-         maxbin2_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_bins"),
-#         concoct_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct_bins"),
+         metabat2_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2","metabat2_bins"),
+         maxbin2_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2","maxbin2_bins"),
+#         concoct_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct","concoct_bins"),
          completeness_thresh = config["completeness_thresh"],
          contamination_thresh = config["contamination_thresh"]
     conda: "utils/envs/metawrap_env.yaml"
@@ -176,43 +207,85 @@ rule quast_refined_bins:
     conda: "utils/envs/quast_env.yaml"
     shell:
        "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
-       "do echo $bin_file;"
+       "do echo $bin_file; "
        "filename=$(basename $bin_file \".fa\"); "
        "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
        "mkdir -p $bin_dir; "
        "quast_bin_dir=\"$bin_dir/quast\"; "
-       "mkdir -p $quast_bin_dir"
-       "refined_bin_file={params.refined_bins_dir}/$bin_file; "
-       "echo \"quast.py --output-dir $quast_bin_dir --threads {params.threads} $refined_bin_file\"; "
+       "mkdir -p $quast_bin_dir; "
+       "refined_bin_file=\"{params.refined_bins_dir}/$bin_file\"; "
        "quast.py --output-dir $quast_bin_dir --threads {params.threads} $refined_bin_file; "       
        "done"
 
-# rule prokka_refined_bins:
-#    input:
-#        renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
-#    output:
-#        prokka_fna_file = os.path.join(config["output_dir"],"{sample}","assembly","prokka","prokka_annotations","{sample}_metagenome.fna"),
-#        prokka_gff_file = os.path.join(config["output_dir"],"{sample}","assembly","prokka","prokka_annotations","{sample}_metagenome.gff")
-#    params:
-#        assembly_prokka_dir = os.path.join(config["output_dir"],"{sample}","assembly","prokka"),
-#        threads = config["prokka_threads"]
-#    conda: "utils/envs/prokka_env.yaml"
-#    shell:
-#       "prokka --metagenome --outdir {params.prokka_assembly_dir} --prefix {params.prefix} {input.renamed_metagenome_assembly_file} --cpus {params.threads} --rfam 1 --force"
+rule prokka_refined_bins:
+    input:
+        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
+    output:
+        prokka_fna_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","prokka","{sample}_bin.1.fna"),
+        prokka_gff_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","prokka","{sample}_bin.1.gff")
+    params:
+        refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
+        threads = config["prokka_threads"],
+    conda: "utils/envs/prokka_env.yaml"
+    shell:
+       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
+       "do echo $bin_file; "
+       "filename=$(basename $bin_file \".fa\"); "
+       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
+       "mkdir -p $bin_dir; "
+       "prokka_bin_dir=\"$bin_dir/prokka\"; "
+       "mkdir -p $prokka_bin_dir; "
+       "refined_bin_file=\"{params.refined_bins_dir}/$bin_file\"; "
+       "prefix=$filename; "
+       "prokka --metagenome --outdir $prokka_bin_dir --prefix $prefix $refined_bin_file --cpus {params.threads} --rfam 1 --force; "
+       "done"
 
-#rule metaerg_refined_bins:
-#    input:
-#        renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
-#    output:
+rule metaerg_refined_bins:
+    input:
+        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
+    output:
 ##        metaerg_fna_file = os.path.join(config["output_dir"],"{sample}","assembly","metaerg","{sample}_metagenome.fna"),
-#        metaerg_gff_file = os.path.join(config["output_dir"],"{sample}","assembly","metaerg","data","all.gff")
-#    params:
-#        assembly_metaerg_dir = os.path.join(config["output_dir"],"{sample}","assembly","metaerg"),
-#        metaerg_database_path = config["metaerg_database_path"],
-#        locustag = "{sample}_metagenome",
-#        threads = config["metaerg_threads"]
-#    shell:
-#       "singularity run -H $HOME -B {params.metaerg_database_path}:/NGStools/metaerg/db -B /work:/work -B /bulk:/bulk /global/software/singularity/images/software/metaerg2.sif /NGStools/metaerg/bin/metaerg.pl --mincontiglen 200 --gcode 11 --gtype meta --minorflen 180 --cpus {params.threads} --evalue 1e-05 --identity 20 --coverage 70 --locustag {params.locustag} --force --outdir {params.assembly_metaerg_dir} {input.renamed_metagenome_assembly_file}"
+        metaerg_gff_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","metaerg","data","all.gff")
+    params:
+        metaerg_database_path = config["metaerg_database_path"],
+        refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
+        threads = config["metaerg_threads"]
+    shell:
+       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
+       "do echo $bin_file; "
+       "filename=$(basename $bin_file \".fa\"); "
+       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
+       "mkdir -p $bin_dir; "
+       "metaerg_bin_dir=\"$bin_dir/metaerg\"; "
+       "mkdir -p $metaerg_bin_dir; "
+       "refined_bin_file=\"{params.refined_bins_dir}/$bin_file\"; "
+       "locus_tag=$filename; "
+       "singularity run -H $HOME -B {params.metaerg_database_path}:/NGStools/metaerg/db -B /work:/work -B /bulk:/bulk /global/software/singularity/images/software/metaerg2.sif /NGStools/metaerg/bin/metaerg.pl --mincontiglen 200 --gcode 11 --gtype meta --minorflen 180 --cpus {params.threads} --evalue 1e-05 --identity 20 --coverage 70 --locustag $locus_tag --force --outdir $metaerg_bin_dir $refined_bin_file; "
+       "done"
+
+rule checkm_refined_bins:
+    input:
+        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
+    output:
+        checkm_table_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","checkm","checkm.tsv")
+    params:
+        checkm_database = config["checkm_database_path"],
+        refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
+        threads = config["checkm_threads"]
+    conda: "utils/envs/checkm_env.yaml"
+    shell:
+       "checkm data setRoot {params.checkm_database};"
+       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
+       "do echo $bin_file; "
+       "filename=$(basename $bin_file \".fa\"); "
+       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
+       "mkdir -p $bin_dir; "
+       "checkm_bin_dir=\"$bin_dir/checkm\"; "
+       "mkdir -p $checkm_bin_dir; "
+       "checkm_table_file=\"$checkm_bin_dir/checkm.tsv\"; "
+       "ln -s {params.refined_bins_dir}/$bin_file $checkm_bin_dir/$bin_file; "
+       "checkm lineage_wf -t {params.threads} -x fa --tab_table --file $checkm_table_file $checkm_bin_dir $checkm_bin_dir; "
+       "done"
 
 rule gtdbtk_refined_bins:
     input:
@@ -227,7 +300,7 @@ rule gtdbtk_refined_bins:
     shell:
        "GTDBTK_DATA_PATH=\"{params.gtdbtk_data_path}\"; "       
        "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
-       "do echo $bin_file;"
+       "do echo $bin_file; "
        "filename=$(basename $bin_file \".fa\"); "
        "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
        "mkdir -p $bin_dir; "

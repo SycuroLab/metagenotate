@@ -133,8 +133,4 @@ Place this path in the `metaphlan_database` parameter in the `config.yaml` file.
 
 ## Known Issues
 
-1) Sometimes the pipeline fails with the every first metaphlan command exiting. A possible problem can be with the execute permissions not set in the conda envirnoment bin forlder for metaphlan. You can check this by 
- ``` ls -l .snakemake/conda/<ENV_name>/bin/metaphlan ```. 
- Once in the bin folder, you can change the permissions by ```chmod u+x *``` to change the permissions for all executables in the bin folder.
-2) The location of the downloaded chocophlan database that metaphlan needs is ```.snakemake/conda/<ENV_name>/lib/python3.7/site-packages/metaphlan/metaphlan_databases/```. It has happened in the past that some files are missing so this would be the place to check
-
+1) The metaerg_refined_bin rule exits with an error that all the bins failed. Looks like a filehandle error. Solution: Delete all metaerg directories and re-run the pipeline.
