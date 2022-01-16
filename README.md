@@ -1,34 +1,34 @@
-# metaphlan
+# metagenotate
 
-Snakemake pipeline for profiling composition of microbial communities from metagenomic shotgun sequencing data using [MetaPhlAn3](https://www.nature.com/articles/nmeth.3802).
+Snakemake pipeline for metagenomic analysis, annotation and classification. assembly, binning, bin refinement
 
 ## Overview
 
 Input: 
 
-* Cleaned and filtered reads from shotgun metagenome sequencing (specify whether reads are paired or unpaired in the config file
+* Filtered and cleaned paired-end reads from shotgun metagenome sequencing.
 
 Output: 
 
-* Table of microbial taxa and their **raw** abundance for each sample, `output/merged_abundance_table.txt`
-* Abundance table at species level, `merged_abundance_table_species.txt`
+Metagenome assembly with metaspades and megahit (metaWRAP). Assembles metagenome using metaspades with filtered and cleaned reads as input. Reads that were not used in the assembly are then assembled using megahit. Both assemblies are then combined into one metagenome assembly file.
+
+Metagenome bins (MAGs)
+
+Metagenome assembly and metagenome bin annotation with Prokka and MetaErg.
+
+
 
 ## Pipeline summary
 
 ### Steps
 
-1) Profile microbial clades and their abundances using MetaPhlAn3. This step generates a profile of species abundances present in each sample.
-
-2) Merge profiles. This step combines all the output files from MetaPhlAn3 into one table.
-
-3) Individual sample profile has both raw and relative abundance values so if needed relative abundances can be merged also.
 
 ## Installation
 
 To use this pipeline, navigate to your project directory and clone this repository into that directory using the following command:
 
 ```
-git clone https://github.com/SycuroLab/metaphlan.git metaphlan
+git clone https://github.com/SycuroLab/metagenotate.git
 ```
 
 Note: you need to have **conda** and **snakemake** installed in order to run this. To install conda, see the instructions [here](https://github.com/ucvm/synergy/wiki). 
@@ -69,7 +69,7 @@ Test the pipeline by running `snakemake -np`. This command prints out the comman
 To run the pipeline on the ARC compute cluster, enter the following command from the project directory:
 
 ```
-sbatch < metaphlan_sbatch.sh
+sbatch < metagenotate_sbatch.sh
 ```
 
 The above command submits jobs to ARC, one for each sample and step of the metqc pipeline.
@@ -83,52 +83,26 @@ The General Guidelines and Policies can be found here:
 https://rcs.ucalgary.ca/index.php/General_Cluster_Guidelines_and_Policies
 
 
-## Running the pipeline on Synergy (LSF cluster)
-
-Test the pipeline by running `snakemake -np`. This command prints out the commands to be run without actually running them. 
-
-To run the pipeline on the Synergy compute cluster, enter the following command from the project directory:
-
-```
-snakemake --cluster-config cluster.json --cluster 'bsub -n {cluster.n} -R {cluster.resources} -W {cluster.walllim} -We {cluster.time} -M {cluster.maxmem} -oo {cluster.output} -e {cluster.error}' --jobs 500 --use-conda
-```
-The above command submits jobs to Synergy, one for each sample and step of the metaphlan pipeline. Note: the file `cluster.json` in the `cluster_files/lsf_files/` folder contains the parameters for the LSF job submission system that Synergy uses. In most cases, this file should not be modified.
 
 ## Results and log files
 
 Snakemake will create a directory for the results of the pipeline as well as a directory for log files. Log files of each step of the pipeline will be written to the `logs` directory.
 
-## Metphlan Database
+## Databases and Location
 
-The Metaphlan Database was downloaded and installed previously for ease of use.
+Databases used for metagenotate were downloaded and installed previously for ease of use.
 
 Location: 
 `arc.ucalgary.ca`
 
 Directory Path: 
-`/bulk/IMCshared_bulk/shared/dbs/metaphlan3`
+``
 
 If there is a newer version of the database that you want to use for your project you can download the newer version;
 
-1. Install the metaphlan 3 conda environment. Requires conda please see conda installation instructions above.
-```
-conda env create --file metaphlan3_env.yaml 
-```
-2. Activate the metaphlan3 conda environment.
-```
-conda activate metaphlan3
-```
-3. Download and install metaphlan database.
-```
-metaphlan --install
 ```
 
-After installation the database should be located in the following directory.
-```
-/home/<username>/miniconda3/envs/metaphlan3/lib/python3.7/site-packages/metaphlan/metaphlan_databases
-```
-
-Place this path in the `metaphlan_database` parameter in the `config.yaml` file.
+Place this path in the `` parameter in the `config.yaml` file.
 
 
 ## Known Issues
