@@ -70,7 +70,7 @@ rule rename_metawrap_assembly_file:
     output:
         renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
     shell:
-        "ln -s {input.metagenome_final_assembly_file} {output.renamed_metagenome_assembly_file}"
+        "cp {input.metagenome_final_assembly_file} {output.renamed_metagenome_assembly_file}"
 
 rule quast_assembly:
     input:
@@ -193,7 +193,7 @@ rule rename_refined_bin_file:
        "do echo $bin_file; "
        "filename=$(basename $bin_file \".fa\"); "
        "renamed_refined_bin_file=\"{params.refined_bins_dir}/{params.sample_name}_$filename.fa\"; "
-       "ln -s {params.metawrap_bin_refinement_dir}/$bin_file $renamed_refined_bin_file; "
+       "cp {params.metawrap_bin_refinement_dir}/$bin_file $renamed_refined_bin_file; "
        "done"
 
 rule quast_refined_bins:

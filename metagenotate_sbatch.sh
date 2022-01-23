@@ -10,9 +10,18 @@
 #SBATCH --error=metagenotate_run.%J.err
 #SBATCH --output=metagenotate_run.%J.out
 
+
 log_dir="$(pwd)"
 log_file="logs/metagenotate-analysis.log.txt"
+
+# The number of jobs for the snakemake command.
 num_jobs=60
+
+# The number of seconds to wait before checking if the output file of a snakemake rule is created.
+latency_wait=15
+
+# The number of times to restart a job if it fails.
+restart_times=10
 
 echo "started at: `date`"
 
@@ -22,7 +31,7 @@ source ~/.bashrc
 # Activate the snakemake conda environment.
 conda activate snakemake
 
-snakemake --cluster-config cluster.json --cluster 'sbatch --partition={cluster.partition} --cpus-per-task={cluster.cpus-per-task} --nodes={cluster.nodes} --ntasks={cluster.ntasks} --time={cluster.time} --mem={cluster.mem} --output={cluster.output} --error={cluster.error}' --jobs $num_jobs --use-conda &> $log_dir/$log_file
+snakemake --cluster-config cluster.json --cluster 'sbatch --partition={cluster.partition} --cpus-per-task={cluster.cpus-per-task} --nodes={cluster.nodes} --ntasks={cluster.ntasks} --time={cluster.time} --mem={cluster.mem} --output={cluster.output} --error={cluster.error}' --latency-wait $latency_wait --restart-times $restart_times --rerun-incomplete --jobs $num_jobs --use-conda &> $log_dir/$log_file
 
 output_dir=$(grep "output_dir" < config.yaml | grep -v "#" | cut -d ' ' -f2 | sed 's/"//g')
 list_files=$(grep "list_files" < config.yaml | grep -v "#" | cut -d ' ' -f2 | sed 's/"//g')
