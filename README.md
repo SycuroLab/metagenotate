@@ -43,9 +43,10 @@ See the snakemake installation [webpage](https://snakemake.readthedocs.io/en/sta
 
 Add the following lines to the ${HOME}/.bashrc file;
 
+```
 export PATH=/bulk/IMCshared_bulk/shared/shared_software/metaWRAP/bin:$PATH
 export PATH=/bulk/IMCshared_bulk/shared/shared_software/metaWRAP/bin/metawrap-scripts:$PATH
-
+```
 
 ## Config file
 
