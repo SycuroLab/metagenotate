@@ -41,6 +41,12 @@ conda install -c bioconda -c conda-forge snakemake
 
 See the snakemake installation [webpage](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html) for further details.
 
+Add the following lines to the ${HOME}/.bashrc file;
+
+export PATH=/bulk/IMCshared_bulk/shared/shared_software/metaWRAP/bin:$PATH
+export PATH=/bulk/IMCshared_bulk/shared/shared_software/metaWRAP/bin/metawrap-scripts:$PATH
+
+
 ## Config file
 
 All the parameters required to run this pipeline are specified in a config file, written in yaml. See/modify the provided example file with your custom parameters, called `config.yaml`. This is the only file that should be modified before running the pipeline. Make sure to follow the syntax in the example file in terms of when to use quotations around parameters.
