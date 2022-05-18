@@ -2,14 +2,14 @@
 # * Parameters for metagenotate pipeline *
 # ***************************************
 
-list_files: "/work/sycuro_lab/kevin/tkg_pilot_project_2021/scripts/metawrap_job_arrays/KG_files.txt"
+#list_files: "/home/kevin.muirhead/TS-data/metagenotate/TS_sample_list.txt"
 
-#list_files: "/work/sycuro_lab/kevin/tkg_pilot_project_2021/scripts/metawrap_job_arrays/KG_1_file.txt"
+list_files: "/home/kevin.muirhead/TS-data/fix/metagenotate/TS_sample_list1.txt"
 
 # Path to sequences
-input_dir: "/work/sycuro_lab/kevin/tkg_pilot_project_2021/metqc_tkg_2021-06-23/bmtagger"
+input_dir: "/bulk/IMCshared_bulk/sycuro_shared_projects/Davide_TS/clean_reads/bmtagger/"
 
-output_dir: "/work/sycuro_lab/kevin/metawrap_analysis_test_2021-12-28"
+output_dir: "/work/sycuro_lab/kevin/Davide_TS_metagenotate_2022-04-18"
 
 # Suffix for forward reads.
 forward_read_suffix: "_bmtagged_1.fastq"
@@ -19,6 +19,8 @@ reverse_read_suffix: "_bmtagged_2.fastq"
 
 
 ## metawrap assembly parameters
+
+metawrap_path: "/bulk/IMCshared_bulk/shared/shared_software/metaWRAP/bin"
 
 # Number of threads for the metawrap assembly module.
 assembler_threads: 14

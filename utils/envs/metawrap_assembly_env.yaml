@@ -19,6 +19,7 @@ dependencies:
   - libstdcxx-ng=12.1.0=ha89aaad_16
   - libuuid=2.32.1=h7f98852_1000
   - libzlib=1.2.11=h166bdaf_1014
+  - megahit=1.2.9=h2e03b76_1
   - ncurses=6.3=h27087fc_1
   - openssl=1.1.1o=h166bdaf_0
   - perl=5.32.1=2_h7f98852_perl5
