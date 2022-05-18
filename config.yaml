@@ -2,14 +2,14 @@
 # * Parameters for metagenotate pipeline *
 # ***************************************
 
-#list_files: "/home/kevin.muirhead/TS-data/metagenotate/TS_sample_list.txt"
+#list_files: "/home/kevin.muirhead/metagenotate/sample_list.txt"
 
-list_files: "/home/kevin.muirhead/TS-data/fix/metagenotate/TS_sample_list.txt"
+list_files: "/home/kevin.muirhead/metagenotate/sample_list.txt"
 
 # Path to sequences
-input_dir: "/bulk/IMCshared_bulk/sycuro_shared_projects/Davide_TS/clean_reads/bmtagger/"
+input_dir: "/work/sycuro_lab/kevin/project/clean_reads/bmtagger/"
 
-output_dir: "/work/sycuro_lab/kevin/Davide_TS_metagenotate_all_samples_2022-05-17"
+output_dir: "/work/sycuro_lab/kevin/metagenotate_all_samples_2022-05-17"
 
 # Suffix for forward reads.
 forward_read_suffix: "_bmtagged_1.fastq"
