@@ -13,10 +13,10 @@
   },
   "metawrap_assembly" :
   {
-
+    "partition": "synergy",
     "cpus-per-task" : 14,
     "time" : "2-00:00:00",
-    "mem" : 180G,
+    "mem" : 220G,
 
   },
   "rename_metawrap_assembly_file" :
@@ -35,13 +35,23 @@
     "mem" : 5G,
 
   },
+  "checkm_refined_bins" :
+  {
+    "partition": "bigmem,synergy",
+    "cpus-per-task" : 14,
+    "time" : "05:00:00",
+    "mem" : 220G,
+    "output" : "logs/{rule}.{wildcards}.out",
+    "error" : "logs/{rule}.{wildcards}.err"
+  },
   "gtdbtk_refined_bins" :
   {
-    "partition": "synergy",
+    "partition": "bigmem,synergy",
     "cpus-per-task" : 14,
-    "time" : "2-00:00:00",
-    "mem" : 0,
-
+    "time" : "05:00:00",
+    "mem" : 220G,
+    "output" : "logs/{rule}.{wildcards}.out",
+    "error" : "logs/{rule}.{wildcards}.err"
   },
 
 

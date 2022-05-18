@@ -52,12 +52,12 @@ rule all:
 #        expand(config["output_dir"]+"/{sample}/bin_refinement/concoct_bins/bin.0.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/bin_refinement/metawrap_" + str(config["completeness_thresh"]) + "_" + str(config["contamination_thresh"]) + "_bins.stats",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1.fa",sample=SAMPLES),
-#        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/quast/transposed_report.tsv",sample=SAMPLES),
-#        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/prokka/{sample}_bin.1.fna",sample=SAMPLES),
-#        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/prokka/{sample}_bin.1.gff",sample=SAMPLES),
-#        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/metaerg/data/all.gff",sample=SAMPLES),
-#        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/checkm/checkm.tsv",sample=SAMPLES),
-#        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/gtdbtk/gtdbtk.bac120.summary.tsv",sample=SAMPLES)
+        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/quast/transposed_report.tsv",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/prokka/{sample}_bin.1.fna",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/prokka/{sample}_bin.1.gff",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/metaerg/data/all.gff",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/checkm/checkm.tsv",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/gtdbtk/gtdbtk.bac120.summary.tsv",sample=SAMPLES)
 
 rule metawrap_assembly:
     input:
@@ -218,117 +218,117 @@ rule rename_refined_bin_file:
        "COUNTER=$((COUNTER+1)); "
        "done"
 
-#rule quast_refined_bins:
-#	    input:
-#        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
-#    output:
-#        quast_transposed_report_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1", "quast","transposed_report.tsv")
-#    params:
-#        refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
-#        threads = config["quast_threads"]
-#    conda: "utils/envs/quast_env.yaml"
-#    shell:
-#       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
-#       "do echo $bin_file; "
-#       "filename=$(basename $bin_file \".fa\"); "
-#       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
-#       "mkdir -p $bin_dir; "
-#       "quast_bin_dir=\"$bin_dir/quast\"; "
-#       "mkdir -p $quast_bin_dir; "
-#       "refined_bin_file=\"{params.refined_bins_dir}/$bin_file\"; "
-#       "quast.py --output-dir $quast_bin_dir --threads {params.threads} $refined_bin_file; "       
-#       "done"
+rule quast_refined_bins:
+     input:
+        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
+     output:
+        quast_transposed_report_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1", "quast","transposed_report.tsv")
+     params:
+        refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
+        threads = config["quast_threads"]
+     conda: "utils/envs/quast_env.yaml"
+     shell:
+       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
+       "do echo $bin_file; "
+       "filename=$(basename $bin_file \".fa\"); "
+       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
+       "mkdir -p $bin_dir; "
+       "quast_bin_dir=\"$bin_dir/quast\"; "
+       "mkdir -p $quast_bin_dir; "
+       "refined_bin_file=\"{params.refined_bins_dir}/$bin_file\"; "
+       "quast.py --output-dir $quast_bin_dir --threads {params.threads} $refined_bin_file; "       
+       "done"
 
-#rule prokka_refined_bins:
-#    input:
-#        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
-#    output:
-#        prokka_fna_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","prokka","{sample}_bin.1.fna"),
-#        prokka_gff_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","prokka","{sample}_bin.1.gff")
-#    params:
-#        refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
-#        threads = config["prokka_threads"],
-#    conda: "utils/envs/prokka_env.yaml"
-#    shell:
-#       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
-#       "do echo $bin_file; "
-#       "filename=$(basename $bin_file \".fa\"); "
-#       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
-#       "mkdir -p $bin_dir; "
-#       "prokka_bin_dir=\"$bin_dir/prokka\"; "
-#       "mkdir -p $prokka_bin_dir; "
-#       "refined_bin_file=\"{params.refined_bins_dir}/$bin_file\"; "
-#       "prefix=$filename; "
-#       "prokka --metagenome --outdir $prokka_bin_dir --prefix $prefix $refined_bin_file --cpus {params.threads} --rfam 1 --force; "
-#       "done"
+rule prokka_refined_bins:
+    input:
+        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
+    output:
+        prokka_fna_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","prokka","{sample}_bin.1.fna"),
+        prokka_gff_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","prokka","{sample}_bin.1.gff")
+    params:
+        refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
+        threads = config["prokka_threads"],
+    conda: "utils/envs/prokka_env.yaml"
+    shell:
+       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
+       "do echo $bin_file; "
+       "filename=$(basename $bin_file \".fa\"); "
+       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
+       "mkdir -p $bin_dir; "
+       "prokka_bin_dir=\"$bin_dir/prokka\"; "
+       "mkdir -p $prokka_bin_dir; "
+       "refined_bin_file=\"{params.refined_bins_dir}/$bin_file\"; "
+       "prefix=$filename; "
+       "prokka --metagenome --outdir $prokka_bin_dir --prefix $prefix $refined_bin_file --cpus {params.threads} --rfam 1 --force; "
+       "done"
 
-#rule metaerg_refined_bins:
-#    input:
-#        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
-#    output:
+rule metaerg_refined_bins:
+    input:
+        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
+    output:
 ###        metaerg_fna_file = os.path.join(config["output_dir"],"{sample}","assembly","metaerg","{sample}_metagenome.fna"),
-#        metaerg_gff_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","metaerg","data","all.gff")
-#    params:
-#        metaerg_database_path = config["metaerg_database_path"],
-#        refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
-#        threads = config["metaerg_threads"]
-#    shell:
-#       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
-#       "do echo $bin_file; "
-#       "filename=$(basename $bin_file \".fa\"); "
-#       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
-#       "mkdir -p $bin_dir; "
-#       "metaerg_bin_dir=\"$bin_dir/metaerg\"; "
-#       "mkdir -p $metaerg_bin_dir; "
-#       "refined_bin_file=\"{params.refined_bins_dir}/$bin_file\"; "
-#       "locus_tag=$filename; "
-#       "singularity run -H $HOME -B {params.metaerg_database_path}:/NGStools/metaerg/db -B /work:/work -B /bulk:/bulk /global/software/singularity/images/software/metaerg2.sif /NGStools/metaerg/bin/metaerg.pl --mincontiglen 200 --gcode 11 --gtype meta --minorflen 180 --cpus {params.threads} --evalue 1e-05 --identity 20 --coverage 70 --locustag $locus_tag --force --outdir $metaerg_bin_dir $refined_bin_file; "
-#       "done"
+        metaerg_gff_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","metaerg","data","all.gff")
+    params:
+        metaerg_database_path = config["metaerg_database_path"],
+        refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
+        threads = config["metaerg_threads"]
+    shell:
+       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
+       "do echo $bin_file; "
+       "filename=$(basename $bin_file \".fa\"); "
+       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
+       "mkdir -p $bin_dir; "
+       "metaerg_bin_dir=\"$bin_dir/metaerg\"; "
+       "mkdir -p $metaerg_bin_dir; "
+       "refined_bin_file=\"{params.refined_bins_dir}/$bin_file\"; "
+       "locus_tag=$filename; "
+       "singularity run -H $HOME -B {params.metaerg_database_path}:/NGStools/metaerg/db -B /work:/work -B /bulk:/bulk /global/software/singularity/images/software/metaerg2.sif /NGStools/metaerg/bin/metaerg.pl --mincontiglen 200 --gcode 11 --gtype meta --minorflen 180 --cpus {params.threads} --evalue 1e-05 --identity 20 --coverage 70 --locustag $locus_tag --force --outdir $metaerg_bin_dir $refined_bin_file; "
+       "done"
 
-#rule checkm_refined_bins:
-#    input:
-#        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
-#    output:
-#        checkm_table_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","checkm","checkm.tsv")
-#    params:
-#        checkm_database = config["checkm_database_path"],
-#        refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
-#        threads = config["checkm_threads"]
-#    conda: "utils/envs/checkm_env.yaml"
-#    shell:
-#       "checkm data setRoot {params.checkm_database};"
-#       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
-#       "do echo $bin_file; "
-#       "filename=$(basename $bin_file \".fa\"); "
-#       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
-#       "mkdir -p $bin_dir; "
-#       "checkm_bin_dir=\"$bin_dir/checkm\"; "
-#       "mkdir -p $checkm_bin_dir; "
-#       "checkm_table_file=\"$checkm_bin_dir/checkm.tsv\"; "
-#       "ln -s {params.refined_bins_dir}/$bin_file $checkm_bin_dir/$bin_file; "
-#       "checkm lineage_wf -t {params.threads} -x fa --tab_table --file $checkm_table_file $checkm_bin_dir $checkm_bin_dir; "
-#       "done"
+rule checkm_refined_bins:
+    input:
+        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
+    output:
+        checkm_table_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","checkm","checkm.tsv")
+    params:
+        checkm_database = config["checkm_database_path"],
+        refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
+        threads = config["checkm_threads"]
+    conda: "utils/envs/checkm_env.yaml"
+    shell:
+       "checkm data setRoot {params.checkm_database};"
+       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
+       "do echo $bin_file; "
+       "filename=$(basename $bin_file \".fa\"); "
+       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
+       "mkdir -p $bin_dir; "
+       "checkm_bin_dir=\"$bin_dir/checkm\"; "
+       "mkdir -p $checkm_bin_dir; "
+       "checkm_table_file=\"$checkm_bin_dir/checkm.tsv\"; "
+       "cp {params.refined_bins_dir}/$bin_file $checkm_bin_dir/$bin_file; "
+       "checkm lineage_wf -t {params.threads} -x fa --tab_table --file $checkm_table_file $checkm_bin_dir $checkm_bin_dir; "
+       "done"
 
-#rule gtdbtk_refined_bins:
-#    input:
-#        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa") 
-#    output:
-#        gtdbtk_refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","gtdbtk","gtdbtk.bac120.summary.tsv")
-#    params:
-#       refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
-#       gtdbtk_data_path = config["gtdbtk_database_path"],
-#       threads = config["gtdbtk_threads"]
-#    conda: "utils/envs/gtdbtk_env.yaml"
-#    shell:
-#       "GTDBTK_DATA_PATH=\"{params.gtdbtk_data_path}\"; "       
-#       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
-#       "do echo $bin_file; "
-#       "filename=$(basename $bin_file \".fa\"); "
-#       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
-#       "mkdir -p $bin_dir; "
-#       "gtdbtk_bin_dir=\"$bin_dir/gtdbtk\"; "
-#       "mkdir -p $gtdbtk_bin_dir; "
-#       "ln -s {params.refined_bins_dir}/$bin_file $gtdbtk_bin_dir/$bin_file; "
-#       "gtdbtk classify_wf --genome_dir $gtdbtk_bin_dir --extension \"fa\" --cpus {params.threads} --out_dir $gtdbtk_bin_dir; "
-#       "done"
+rule gtdbtk_refined_bins:
+    input:
+        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa") 
+    output:
+        gtdbtk_refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","gtdbtk","gtdbtk.bac120.summary.tsv")
+    params:
+       refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
+       gtdbtk_data_path = config["gtdbtk_database_path"],
+       threads = config["gtdbtk_threads"]
+    conda: "utils/envs/gtdbtk_env.yaml"
+    shell:
+       "GTDBTK_DATA_PATH=\"{params.gtdbtk_data_path}\"; "       
+       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
+       "do echo $bin_file; "
+       "filename=$(basename $bin_file \".fa\"); "
+       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
+       "mkdir -p $bin_dir; "
+       "gtdbtk_bin_dir=\"$bin_dir/gtdbtk\"; "
+       "mkdir -p $gtdbtk_bin_dir; "
+       "cp {params.refined_bins_dir}/$bin_file $gtdbtk_bin_dir/$bin_file; "
+       "gtdbtk classify_wf --genome_dir $gtdbtk_bin_dir --extension \"fa\" --cpus {params.threads} --out_dir $gtdbtk_bin_dir; "
+       "done"
 
