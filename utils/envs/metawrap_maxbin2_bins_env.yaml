@@ -1,6 +1,5 @@
 name: metawrap_maxbin2_bins_env
 channels:
-  - ursky
   - bioconda
   - conda-forge
   - defaults
@@ -10,7 +9,7 @@ dependencies:
   - bwa=0.7.17=h7132678_9
   - bzip2=1.0.8=h7f98852_4
   - c-ares=1.18.1=h7f98852_0
-  - ca-certificates=2021.10.8=ha878542_0
+  - ca-certificates=2022.4.26=h06a4308_0
   - htslib=1.15.1=h9753748_0
   - keyutils=1.6.1=h166bdaf_0
   - krb5=1.19.3=h3790be6_0
@@ -25,10 +24,11 @@ dependencies:
   - libssh2=1.10.0=ha56f1ee_2
   - libstdcxx-ng=12.1.0=ha89aaad_16
   - libzlib=1.2.11=h166bdaf_1014
+  - metabat2=2.12.1=1
   - ncurses=6.3=h27087fc_1
-  - openssl=1.1.1o=h166bdaf_0
+  - openssl=1.1.1o=h7f8727e_0
   - perl=5.32.1=2_h7f98852_perl5
   - samtools=1.15.1=h1170115_0
   - xz=5.2.5=h516909a_1
   - zlib=1.2.11=h166bdaf_1014
-prefix: /work/sycuro_lab/kevin/software/miniconda3/envs/metawrap_maxbin2_bins_env
+prefix: /work/sycuro_lab/kevin/miniconda3/envs/metawrap_maxbin2_bins_env
