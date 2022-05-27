@@ -29,7 +29,6 @@ rule all:
         expand(config["output_dir"]+"/{sample}/assembly/metaspades/mapped_metaspades_assembly_reads.sam",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/metaspades/unmapped_metaspades_assembly_reads_R1.fastq",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/metaspades/unmapped_metaspades_assembly_reads_R2.fastq",sample=SAMPLES),
-        expand(config["output_dir"]+"/{sample}/assembly/metaspades/unmapped_metaspades_assembly_reads_R2.fastq",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/megahit/fixed_headers_final.contigs.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/final_assembly.fasta",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/{sample}_metagenome.fasta",sample=SAMPLES),
@@ -38,12 +37,12 @@ rule all:
         expand(config["output_dir"]+"/{sample}/assembly/prokka/{sample}_metagenome.gff",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/metaerg/data/all.gff",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/mapped_metagenome_assembly_reads.sam",sample=SAMPLES),
-        expand(config["output_dir"]+"/{sample}/assembly/mapped_metagenome_assembly_reads.bam",sample=SAMPLES),
+   #     expand(config["output_dir"]+"/{sample}/assembly/mapped_metagenome_assembly_reads.bam",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/initial_binning/metabat2/bin.1.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/initial_binning/maxbin2/bin.0.fa",sample=SAMPLES),
 ##        expand(config["output_dir"]+"/{sample}/initial_binning/concoct/concoct_bins/bin.0.fa",sample=SAMPLES),
-        expand(config["output_dir"]+"/{sample}/bin_refinement/metabat2/bin.1.fa",sample=SAMPLES),
-        expand(config["output_dir"]+"/{sample}/bin_refinement/maxbin2/bin.0.fa",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/bin_refinement/metabat2_bins/bin.1.fa",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/bin_refinement/maxbin2_bins/bin.0.fa",sample=SAMPLES),
 
 ##        expand(config["output_dir"]+"/{sample}/bin_refinement/concoct_bins/bin.0.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/bin_refinement/metawrap_" + str(config["completeness_thresh"]) + "_" + str(config["contamination_thresh"]) + "_bins.stats",sample=SAMPLES),
@@ -200,7 +199,7 @@ rule metaerg_assembly:
 
 rule map_reads_to_metagenome:
     input:
-        renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
+        renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta"),
         fastq_read1 = os.path.join(config["input_dir"],"{sample}"+config["forward_read_suffix"]),
         fastq_read2 = os.path.join(config["input_dir"],"{sample}"+config["reverse_read_suffix"])
     output:
@@ -240,8 +239,8 @@ rule metabat2_binning:
     conda: "utils/envs/metabat2_env.yaml"
     shell:
          "jgi_summarize_bam_contig_depths --outputDepth {params.metabat2_depth_file} {input.metagenome_bam_file}; "
-         "metabat2 -i {input.renamed_metagenome_assembly_file} -a {params.metabat_depth_file} -o {params.sample_initial_binning_dir} -m {params.min_sequence_length} -t {params.threads} --unbinned; "
-         "jgi_summarize_bam_contig_depths --outputDepth {input.maxbin2_depth_file} --noIntraDepthVariance {input.metagenome_bam_file}; "
+         "metabat2 -i {input.renamed_metagenome_assembly_file} -a {params.metabat2_depth_file} -o {params.sample_initial_binning_dir} -m {params.min_sequence_length} -t {params.threads} --unbinned; "
+         "jgi_summarize_bam_contig_depths --outputDepth {params.maxbin2_depth_file} --noIntraDepthVariance {input.metagenome_bam_file}; "
 
 
 rule maxbin2_binning:
@@ -251,7 +250,7 @@ rule maxbin2_binning:
          maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2","bin.0.fa")
     params:
          maxbin2_depth_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_depth.txt"),
-         maxbin2_abund_list_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_abund_list.txt")
+         maxbin2_abund_list_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_abund_list.txt"),
          sample_initial_binning_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2"),
          threads = config["binning_threads"],
          min_sequence_length = config["min_sequence_length"],
