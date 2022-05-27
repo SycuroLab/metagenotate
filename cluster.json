@@ -11,10 +11,10 @@
     "output" : "logs/{rule}.{wildcards}.out",
     "error" : "logs/{rule}.{wildcards}.err"
   },
-  "metawrap_assembly" :
+  "metaspades_assembly" :
   {
     "partition": "synergy",
-    "cpus-per-task" : 14,
+    "cpus-per-task" : 26,
     "time" : "2-00:00:00",
     "mem" : 220G,
 

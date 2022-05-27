@@ -1,0 +1,26 @@
+name: samtools_env
+channels:
+  - bioconda
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1=main
+  - _openmp_mutex=5.1=1_gnu
+  - bzip2=1.0.8=h7b6447c_0
+  - c-ares=1.18.1=h7f8727e_0
+  - ca-certificates=2022.4.26=h06a4308_0
+  - curl=7.82.0=h7f8727e_0
+  - krb5=1.19.2=hac12032_0
+  - libcurl=7.82.0=h0b77cf5_0
+  - libedit=3.1.20210910=h7f8727e_0
+  - libev=4.33=h7f8727e_1
+  - libgcc-ng=11.2.0=h1234567_0
+  - libgomp=11.2.0=h1234567_0
+  - libnghttp2=1.46.0=hce63b2e_0
+  - libssh2=1.10.0=h8f2d780_0
+  - libstdcxx-ng=11.2.0=h1234567_0
+  - ncurses=6.3=h7f8727e_2
+  - openssl=1.1.1o=h7f8727e_0
+  - samtools=1.6=hb116620_7
+  - xz=5.2.5=h7f8727e_1
+  - zlib=1.2.12=h7f8727e_2
+prefix: /work/sycuro_lab/kevin/miniconda3/envs/samtools_env
