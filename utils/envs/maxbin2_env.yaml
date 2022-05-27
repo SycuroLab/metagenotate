@@ -34,7 +34,7 @@ dependencies:
   - libxcb=1.15=h7f8727e_0
   - libxml2=2.9.14=h74e7548_0
   - lz4-c=1.9.3=h295c915_1
-  - maxbin2=2.2.7=he1b5a44_0
+  - maxbin2=2.2.6=h14c3975_0
   - ncurses=6.3=h7f8727e_2
   - openssl=1.1.1o=h7f8727e_0
   - pango=1.45.3=hd140c19_0
