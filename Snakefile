@@ -63,7 +63,7 @@ rule metaspades_assembly:
         memory_in_gb = config["memory_in_gb"],
         threads = config["assembler_threads"],
         min_contig_length = config["min_contig_length"],
-        sample_assembly_dir = os.path.join(config["output_dir"],"{sample}","assembly")
+        sample_assembly_dir = os.path.join(config["output_dir"],"{sample}","assembly","metaspades")
     conda: "utils/envs/metaspades_env.yaml"
     shell:
         "metaspades.py -t {params.threads} -m {params.memory_in_gb} -o {params.sample_assembly_dir} -1 {input.fastq_read1} -2 {input.fastq_read2}"
