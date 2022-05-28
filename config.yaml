@@ -4,13 +4,12 @@
 
 #list_files: "/home/kevin.muirhead/metagenotate/sample_list.txt"
 
-list_files: "/work/sycuro_lab/kevin/reworking_metagenotate/TS_metagenotate/metagenotate/TS_sample_list1.txt"
+list_files: "/work/sycuro_lab/kevin/reworking_metagenotate/PD_306_Novaseq_metagenotate/metagenotate/PD_306_samples_list.txt"
 
 # Path to sequences
-#input_dir: "/bulk/IMCshared_bulk/sycuro_shared_projects/PD_306_Novaseq/bmtagger"
-input_dir: "/bulk/IMCshared_bulk/sycuro_shared_projects/Davide_TS/clean_reads/bmtagger"
+input_dir: "/bulk/IMCshared_bulk/sycuro_shared_projects/PD_306_Novaseq/bmtagger"
 
-output_dir: "/work/sycuro_lab/kevin/reworking_metagenotate/TS_metagenotate/Davide_TS"
+output_dir: "/bulk/IMCshared_bulk/sycuro_shared_projects/PD_306_Novaseq/metagenotate"
 
 # Suffix for forward reads.
 forward_read_suffix: "_bmtagged_1.fastq"
@@ -59,11 +58,10 @@ metaerg_threads: 14
 
 
 ## metawrap binning parameters.
+maxbin2_markers: 107
 
 # Number of threads for the metawrap binning module.
 binning_threads: 14
-
-maxbin2_markers: 107
 
 ## metawrap bin_refinement parameters.
 #
@@ -80,12 +78,12 @@ contamination_thresh: 10
 
 checkm_database_path: "/bulk/IMCshared_bulk/shared/dbs/checkm_db"
 
-checkm_threads: 14
+checkm_threads: 26
 
 ## GTDB-tk parameters.
 
 gtdbtk_database_path: "/bulk/IMCshared_bulk/shared/dbs/gtdbtk-1.5.0/db"
 
-gtdbtk_threads: 14
+gtdbtk_threads: 26
 
 
