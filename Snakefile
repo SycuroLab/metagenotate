@@ -24,7 +24,6 @@ SAMPLES = SAMPLES[0].tolist()
 rule all:
     input: 
         expand(config["output_dir"]+"/{sample}/assembly/metaspades/scaffolds.fasta",sample=SAMPLES),
-        expand(config["output_dir"]+"/{sample}/assembly/metaspades/scaffolds.fasta",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/metaspades/long_scaffolds.fasta",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/metaspades/mapped_metaspades_assembly_reads.sam",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/metaspades/unmapped_metaspades_assembly_reads_R1.fastq",sample=SAMPLES),
