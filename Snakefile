@@ -124,7 +124,7 @@ rule megahit_unmapped_metaspades_reads:
         memory_in_gb = config["memory_in_gb"]
     conda: "utils/envs/megahit_env.yaml"
     shell:
-        "megahit -1 {input.unmapped_metaspades_scaffolds_read1_fastq_file} -2 {input.unmapped_metaspades_scaffolds_read2_fastq_file} -t {params.threads} -m {params.memory_in_gb}000000000 -o {params.sample_assembly_dir}/megahit; "
+        "megahit -1 {input.unmapped_metaspades_scaffolds_read1_fastq_file} -2 {input.unmapped_metaspades_scaffolds_read2_fastq_file} -t {params.threads} -m {params.memory_in_gb}000000000 -f -o {params.sample_assembly_dir}/megahit; "
         "sed 's/ /_/g' {params.megahit_assembly_file} > {output.fixed_megahit_final_contigs_file} "
 
 rule combine_and_sort_assembly:
