@@ -14,17 +14,57 @@
   "metaspades_assembly" :
   {
     "partition": "synergy",
-    "cpus-per-task" : 26,
+    "cpus-per-task" : 14,
     "time" : "2-00:00:00",
-    "mem" : 220G,
+    "mem" : 120G,
 
   },
-  "rename_metawrap_assembly_file" :
+  "filter_long_scaffolds" :
   {
 
     "cpus-per-task" : 1,
     "time" : "1-00:00:00",
-    "mem" : 5G,
+    "mem" : 9G,
+
+  },
+  "map_reads_to_assembly" :
+  {
+
+    "cpus-per-task" : 1,
+    "time" : "1-00:00:00",
+    "mem" : 9G,
+
+  },
+  "recover_unmapped_metaspades_reads" :
+  {
+
+    "cpus-per-task" : 1,
+    "time" : "1-00:00:00",
+    "mem" : 9G,
+
+  },
+  "megahit_unmapped_metaspades_reads" :
+  {
+    "partition": "synergy",
+    "cpus-per-task" : 14,
+    "time" : "2-00:00:00",
+    "mem" : 120G,
+
+  },
+  "combine_and_sort_assembly" :
+  {
+
+    "cpus-per-task" : 1,
+    "time" : "1-00:00:00",
+    "mem" : 9G,
+
+  },
+  "rename_final_assembly_file" :
+  {
+
+    "cpus-per-task" : 1,
+    "time" : "1-00:00:00",
+    "mem" : 9G,
 
   },
   "rename_refined_bin_file" :
@@ -32,7 +72,7 @@
 
     "cpus-per-task" : 1,
     "time" : "1-00:00:00",
-    "mem" : 5G,
+    "mem" : 9G,
 
   },
   "checkm_refined_bins" :
