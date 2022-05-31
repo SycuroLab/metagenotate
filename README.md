@@ -41,11 +41,12 @@ conda install -c bioconda -c conda-forge snakemake
 
 See the snakemake installation [webpage](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html) for further details.
 
-Add the following lines to the ${HOME}/.bashrc file;
+Add the following lines to the ${HOME}/.bash_profile file;
 
 ```
 export PATH=/bulk/IMCshared_bulk/shared/shared_software/metaWRAP/bin:$PATH
-export PATH=/bulk/IMCshared_bulk/shared/shared_software/metaWRAP/bin/metawrap-scripts:$PATH
+export PATH=/bulk/IMCshared_bulk/shared/shared_software/maxbin2:$PATH
+
 ```
 
 ## Config file
