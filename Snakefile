@@ -232,6 +232,7 @@ rule metabat2_binning:
     params:
          metabat2_depth_file = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2_depth.txt"),
          maxbin2_depth_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_depth.txt"),
+         maxbin2_abund_list_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_abund_list.txt"),
          sample_initial_binning_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2","bin"),
          threads = config["binning_threads"],
          min_sequence_length = config["min_sequence_length"],
@@ -240,6 +241,7 @@ rule metabat2_binning:
          "jgi_summarize_bam_contig_depths --outputDepth {params.metabat2_depth_file} {input.metagenome_bam_file}; "
          "metabat2 -i {input.renamed_metagenome_assembly_file} -a {params.metabat2_depth_file} -o {params.sample_initial_binning_dir} -m {params.min_sequence_length} -t {params.threads} --unbinned; "
          "jgi_summarize_bam_contig_depths --outputDepth {params.maxbin2_depth_file} --noIntraDepthVariance {input.metagenome_bam_file}; "
+         "tail -n+2 {params.maxbin2_depth_file} | cut -f1,3 > {params.maxbin2_abund_list_file}; "
 
 
 rule maxbin2_binning:
