@@ -23,13 +23,13 @@ reverse_read_suffix: "_bmtagged_2.fastq"
 metawrap_path: "/bulk/IMCshared_bulk/shared/shared_software/metaWRAP/bin"
 
 # Number of threads for the metawrap assembly module.
-assembler_threads: 26
+assembler_threads: 14
 
 # Minumum contig length.
 min_contig_length: 500
 
 # Memory in GB.
-memory_in_gb: 240
+memory_in_gb: 120
 
 ## Filter by length
 

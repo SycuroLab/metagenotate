@@ -38,6 +38,7 @@ rule all:
         expand(config["output_dir"]+"/{sample}/assembly/mapped_metagenome_assembly_reads.sam",sample=SAMPLES),
    #     expand(config["output_dir"]+"/{sample}/assembly/mapped_metagenome_assembly_reads.bam",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/initial_binning/metabat2/bin.1.fa",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/initial_binning/maxbin2_abund_list.txt",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/initial_binning/maxbin2/bin.0.fa",sample=SAMPLES),
 ##        expand(config["output_dir"]+"/{sample}/initial_binning/concoct/concoct_bins/bin.0.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/bin_refinement/metabat2_bins/bin.1.fa",sample=SAMPLES),
@@ -229,10 +230,10 @@ rule metabat2_binning:
          renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
     output:
          metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2","bin.1.fa"),
+         maxbin2_abund_list_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_abund_list.txt"),
     params:
          metabat2_depth_file = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2_depth.txt"),
          maxbin2_depth_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_depth.txt"),
-         maxbin2_abund_list_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_abund_list.txt"),
          sample_initial_binning_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2","bin"),
          threads = config["binning_threads"],
          min_sequence_length = config["min_sequence_length"],
@@ -241,25 +242,24 @@ rule metabat2_binning:
          "jgi_summarize_bam_contig_depths --outputDepth {params.metabat2_depth_file} {input.metagenome_bam_file}; "
          "metabat2 -i {input.renamed_metagenome_assembly_file} -a {params.metabat2_depth_file} -o {params.sample_initial_binning_dir} -m {params.min_sequence_length} -t {params.threads} --unbinned; "
          "jgi_summarize_bam_contig_depths --outputDepth {params.maxbin2_depth_file} --noIntraDepthVariance {input.metagenome_bam_file}; "
-         "tail -n+2 {params.maxbin2_depth_file} | cut -f1,3 > {params.maxbin2_abund_list_file}; "
+         "tail -n+2 {params.maxbin2_depth_file} | cut -f1,3 > {output.maxbin2_abund_list_file}; "
 
 
 rule maxbin2_binning:
     input:
          metagenome_bam_file = os.path.join(config["output_dir"],"{sample}","assembly","mapped_metagenome_assembly_sorted_reads.bam"),
-         renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
+         renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta"),
+         maxbin2_abund_list_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_abund_list.txt"),
     output:
          maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2","bin.0.fa")
     params:
-         maxbin2_depth_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_depth.txt"),
-         maxbin2_abund_list_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_abund_list.txt"),
          sample_initial_binning_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2","bin"),
          threads = config["binning_threads"],
          min_sequence_length = config["min_sequence_length"],
          markers = config["maxbin2_markers"],
     conda: "utils/envs/maxbin2_env.yaml"
     shell:
-         "run_MaxBin.pl -contig {input.renamed_metagenome_assembly_file} -markerset {params.markers} -thread {params.threads} -min_contig_length {params.min_sequence_length} -out {params.sample_initial_binning_dir} -abund_list {params.maxbin2_abund_list_file}; "
+         "perl run_MaxBin.pl -contig {input.renamed_metagenome_assembly_file} -markerset {params.markers} -thread {params.threads} -min_contig_length {params.min_sequence_length} -out {params.sample_initial_binning_dir} -abund_list {input.maxbin2_abund_list_file}; "
          
 #rule metawrap_concoct_binning:
 #    input:
