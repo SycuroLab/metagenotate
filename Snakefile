@@ -232,7 +232,7 @@ rule metabat2_binning:
     params:
          metabat2_depth_file = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2_depth.txt"),
          maxbin2_depth_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_depth.txt"),
-         sample_initial_binning_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2"),
+         sample_initial_binning_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2","bin"),
          threads = config["binning_threads"],
          min_sequence_length = config["min_sequence_length"],
     conda: "utils/envs/metabat2_env.yaml"
@@ -244,13 +244,14 @@ rule metabat2_binning:
 
 rule maxbin2_binning:
     input:
+         metagenome_bam_file = os.path.join(config["output_dir"],"{sample}","assembly","mapped_metagenome_assembly_sorted_reads.bam"),
          renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
     output:
          maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2","bin.0.fa")
     params:
          maxbin2_depth_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_depth.txt"),
          maxbin2_abund_list_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2_abund_list.txt"),
-         sample_initial_binning_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2"),
+         sample_initial_binning_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2","bin"),
          threads = config["binning_threads"],
          min_sequence_length = config["min_sequence_length"],
          markers = config["maxbin2_markers"],
