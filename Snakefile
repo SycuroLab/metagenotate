@@ -34,7 +34,7 @@ rule all:
         expand(config["output_dir"]+"/{sample}/assembly/quast/transposed_report.tsv",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/prokka/{sample}_metagenome.fna",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/prokka/{sample}_metagenome.gff",sample=SAMPLES),
-        expand(config["output_dir"]+"/{sample}/assembly/metaerg/data/all.gff",sample=SAMPLES),
+#        expand(config["output_dir"]+"/{sample}/assembly/metaerg/data/all.gff",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/assembly/mapped_metagenome_assembly_reads.sam",sample=SAMPLES),
    #     expand(config["output_dir"]+"/{sample}/assembly/mapped_metagenome_assembly_reads.bam",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/initial_binning/metabat2/bin.1.fa",sample=SAMPLES),
@@ -50,7 +50,7 @@ rule all:
         expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/quast/transposed_report.tsv",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/prokka/{sample}_bin.1.fna",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/prokka/{sample}_bin.1.gff",sample=SAMPLES),
-        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/metaerg/data/all.gff",sample=SAMPLES),
+#        expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/metaerg/data/all.gff",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/checkm/checkm.tsv",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/gtdbtk/gtdbtk.bac120.summary.tsv",sample=SAMPLES)
 
@@ -183,19 +183,19 @@ rule prokka_assembly:
        "prokka --metagenome --outdir {params.prokka_assembly_dir} --prefix {params.prefix} {input.renamed_metagenome_assembly_file} --cpus {params.threads} --rfam 1 --force"
 
 
-rule metaerg_assembly:
-    input:
-        renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
-    output:
-#        metaerg_fna_file = os.path.join(config["output_dir"],"{sample}","assembly","metaerg","{sample}_metagenome.fna"),
-        metaerg_gff_file = os.path.join(config["output_dir"],"{sample}","assembly","metaerg","data","all.gff")
-    params:
-        assembly_metaerg_dir = os.path.join(config["output_dir"],"{sample}","assembly","metaerg"),
-        metaerg_database_path = config["metaerg_database_path"],
-        locustag = "{sample}_metagenome",
-        threads = config["metaerg_threads"]
-    shell:
-       "singularity run -H $HOME -B {params.metaerg_database_path}:/NGStools/metaerg/db -B /work:/work -B /bulk:/bulk /global/software/singularity/images/software/metaerg2.sif /NGStools/metaerg/bin/metaerg.pl --mincontiglen 200 --gcode 11 --gtype meta --minorflen 180 --cpus {params.threads} --evalue 1e-05 --identity 20 --coverage 70 --locustag {params.locustag} --force --outdir {params.assembly_metaerg_dir} {input.renamed_metagenome_assembly_file}"
+#rule metaerg_assembly:
+#    input:
+#        renamed_metagenome_assembly_file = os.path.join(config["output_dir"],"{sample}","assembly","{sample}_metagenome.fasta")
+#    output:
+##        metaerg_fna_file = os.path.join(config["output_dir"],"{sample}","assembly","metaerg","{sample}_metagenome.fna"),
+#        metaerg_gff_file = os.path.join(config["output_dir"],"{sample}","assembly","metaerg","data","all.gff")
+#    params:
+#        assembly_metaerg_dir = os.path.join(config["output_dir"],"{sample}","assembly","metaerg"),
+#        metaerg_database_path = config["metaerg_database_path"],
+#        locustag = "{sample}_metagenome",
+#        threads = config["metaerg_threads"]
+#    shell:
+#       "singularity run -H $HOME -B {params.metaerg_database_path}:/NGStools/metaerg/db -B /work:/work -B /bulk:/bulk /global/software/singularity/images/software/metaerg2.sif /NGStools/metaerg/bin/metaerg.pl --mincontiglen 200 --gcode 11 --gtype meta --minorflen 180 --cpus {params.threads} --evalue 1e-05 --identity 20 --coverage 70 --locustag {params.locustag} --force --outdir {params.assembly_metaerg_dir} {input.renamed_metagenome_assembly_file}"
 
 rule map_reads_to_metagenome:
     input:
@@ -254,12 +254,13 @@ rule maxbin2_binning:
          maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2","bin.0.fa")
     params:
          sample_initial_binning_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2","bin"),
+         maxbin2_path = config["maxbin2_path"], 
          threads = config["binning_threads"],
          min_sequence_length = config["min_sequence_length"],
          markers = config["maxbin2_markers"],
     conda: "utils/envs/maxbin2_env.yaml"
     shell:
-         "perl run_MaxBin.pl -contig {input.renamed_metagenome_assembly_file} -markerset {params.markers} -thread {params.threads} -min_contig_length {params.min_sequence_length} -out {params.sample_initial_binning_dir} -abund_list {input.maxbin2_abund_list_file}; "
+         "perl {params.maxbin2_path}/run_MaxBin.pl -contig {input.renamed_metagenome_assembly_file} -markerset {params.markers} -thread {params.threads} -min_contig_length {params.min_sequence_length} -out {params.sample_initial_binning_dir} -abund_list {input.maxbin2_abund_list_file}; "
          
 #rule metawrap_concoct_binning:
 #    input:
@@ -303,7 +304,7 @@ rule metawrap_bin_refinement:
 ##         "{params.metawrap_path}/metawrap bin_refinement -o {params.sample_bin_refinement_dir} -t {params.threads} -A {params.metabat2_bins_dir} -B {params.maxbin2_bins_dir} -C {params.concoct_bins_dir} -c {params.completeness_thresh} -x {params.contamination_thresh}"
          "{params.metawrap_path}/metawrap bin_refinement -o {params.sample_bin_refinement_dir} -t {params.threads} -A {params.metabat2_bins_dir} -B {params.maxbin2_bins_dir} -c {params.completeness_thresh} -x {params.contamination_thresh}"
 
-## Going to recreate this so just a directory is used. I can use the find command.
+## Going to recreate this so just a directory is used. I can usethe find command.
 rule rename_refined_bin_file:
     input:
         refined_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins"]), "bin.1.fa")
@@ -368,28 +369,28 @@ rule prokka_refined_bins:
        "prokka --metagenome --outdir $prokka_bin_dir --prefix $prefix $refined_bin_file --cpus {params.threads} --rfam 1 --force; "
        "done"
 
-rule metaerg_refined_bins:
-    input:
-        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
-    output:
+#rule metaerg_refined_bins:
+#    input:
+#        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
+#    output:
 ###        metaerg_fna_file = os.path.join(config["output_dir"],"{sample}","assembly","metaerg","{sample}_metagenome.fna"),
-        metaerg_gff_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","metaerg","data","all.gff")
-    params:
-        metaerg_database_path = config["metaerg_database_path"],
-        refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
-        threads = config["metaerg_threads"]
-    shell:
-       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
-       "do echo $bin_file; "
-       "filename=$(basename $bin_file \".fa\"); "
-       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
-       "mkdir -p $bin_dir; "
-       "metaerg_bin_dir=\"$bin_dir/metaerg\"; "
-       "mkdir -p $metaerg_bin_dir; "
-       "refined_bin_file=\"{params.refined_bins_dir}/$bin_file\"; "
-       "locus_tag=$filename; "
-       "singularity run -H $HOME -B {params.metaerg_database_path}:/NGStools/metaerg/db -B /work:/work -B /bulk:/bulk /global/software/singularity/images/software/metaerg2.sif /NGStools/metaerg/bin/metaerg.pl --mincontiglen 200 --gcode 11 --gtype meta --minorflen 180 --cpus {params.threads} --evalue 1e-05 --identity 20 --coverage 70 --locustag $locus_tag --force --outdir $metaerg_bin_dir $refined_bin_file; "
-       "done"
+#        metaerg_gff_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","metaerg","data","all.gff")
+#    params:
+#        metaerg_database_path = config["metaerg_database_path"],
+#        refined_bins_dir = os.path.join(config["output_dir"],"{sample}","refined_bins"),
+#        threads = config["metaerg_threads"]
+#    shell:
+#       "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
+#       "do echo $bin_file; "
+#       "filename=$(basename $bin_file \".fa\"); "
+#       "bin_dir=\"{params.refined_bins_dir}/$filename\"; "
+#       "mkdir -p $bin_dir; "
+#       "metaerg_bin_dir=\"$bin_dir/metaerg\"; "
+#       "mkdir -p $metaerg_bin_dir; "
+#       "refined_bin_file=\"{params.refined_bins_dir}/$bin_file\"; "
+#       "locus_tag=$filename; "
+#       "singularity run -H $HOME -B {params.metaerg_database_path}:/NGStools/metaerg/db -B /work:/work -B /bulk:/bulk /global/software/singularity/images/software/metaerg2.sif /NGStools/metaerg/bin/metaerg.pl --mincontiglen 200 --gcode 11 --gtype meta --minorflen 180 --cpus {params.threads} --evalue 1e-05 --identity 20 --coverage 70 --locustag $locus_tag --force --outdir $metaerg_bin_dir $refined_bin_file; "
+#       "done"
 
 rule checkm_refined_bins:
     input:

@@ -14,9 +14,9 @@
   "metaspades_assembly" :
   {
     "partition": "synergy",
-    "cpus-per-task" : 14,
+    "cpus-per-task" : 26,
     "time" : "2-00:00:00",
-    "mem" : 120G,
+    "mem" : 220G,
 
   },
   "filter_long_scaffolds" :
@@ -38,17 +38,17 @@
   "recover_unmapped_metaspades_reads" :
   {
 
-    "cpus-per-task" : 1,
+    "cpus-per-task" : 14,
     "time" : "1-00:00:00",
-    "mem" : 9G,
+    "mem" : 60G,
 
   },
   "megahit_unmapped_metaspades_reads" :
   {
     "partition": "synergy",
-    "cpus-per-task" : 14,
+    "cpus-per-task" : 26,
     "time" : "2-00:00:00",
-    "mem" : 120G,
+    "mem" : 220G,
 
   },
   "combine_and_sort_assembly" :
@@ -80,7 +80,7 @@
     "partition": "bigmem,synergy",
     "cpus-per-task" : 26,
     "time" : "05:00:00",
-    "mem" : 220G,
+    "mem" : 240G,
     "output" : "logs/{rule}.{wildcards}.out",
     "error" : "logs/{rule}.{wildcards}.err"
   },
@@ -89,7 +89,7 @@
     "partition": "bigmem,synergy",
     "cpus-per-task" : 26,
     "time" : "05:00:00",
-    "mem" : 220G,
+    "mem" : 240G,
     "output" : "logs/{rule}.{wildcards}.out",
     "error" : "logs/{rule}.{wildcards}.err"
   },

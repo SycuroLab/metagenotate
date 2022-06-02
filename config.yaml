@@ -4,7 +4,8 @@
 
 #list_files: "/home/kevin.muirhead/metagenotate/sample_list.txt"
 
-list_files: "/work/sycuro_lab/kevin/reworking_metagenotate/PD_306_Novaseq_metagenotate/metagenotate/PD_306_samples_list.txt"
+#list_files: "/work/sycuro_lab/kevin/reworking_metagenotate/PD_306_Novaseq_metagenotate/metagenotate/PD_306_samples_list.txt"
+list_files: "/work/sycuro_lab/kevin/reworking_metagenotate/PD_306_Novaseq_metagenotate/metagenotate/PD_no_blnk_Zymo_samples_list.txt"
 
 # Path to sequences
 input_dir: "/bulk/IMCshared_bulk/sycuro_shared_projects/PD_306_Novaseq/bmtagger"
@@ -23,13 +24,13 @@ reverse_read_suffix: "_bmtagged_2.fastq"
 metawrap_path: "/bulk/IMCshared_bulk/shared/shared_software/metaWRAP/bin"
 
 # Number of threads for the metawrap assembly module.
-assembler_threads: 14
+assembler_threads: 26
 
 # Minumum contig length.
 min_contig_length: 500
 
 # Memory in GB.
-memory_in_gb: 120
+memory_in_gb: 220
 
 ## Filter by length
 
@@ -58,6 +59,7 @@ metaerg_threads: 14
 
 
 ## metawrap binning parameters.
+maxbin2_path: "/bulk/IMCshared_bulk/shared/shared_software/maxbin2"
 maxbin2_markers: 107
 
 # Number of threads for the metawrap binning module.
