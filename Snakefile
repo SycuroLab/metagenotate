@@ -268,7 +268,7 @@ rule maxbin2_binning:
          markers = config["maxbin2_markers"],
     conda: "utils/envs/maxbin2_env.yaml"
     shell:
-         "perl {params.maxbin2_path}/run_MaxBin.pl -contig {input.renamed_metagenome_assembly_file} -markerset {params.markers} -thread {params.threads} -min_contig_length {params.min_sequence_length} -out {params.params.maxbin2_working_dir} -abund_list {input.maxbin2_abund_list_file}; "
+         "perl {params.maxbin2_path}/run_MaxBin.pl -contig {input.renamed_metagenome_assembly_file} -markerset {params.markers} -thread {params.threads} -min_contig_length {params.min_sequence_length} -out {params.maxbin2_working_dir} -abund_list {input.maxbin2_abund_list_file}; "
          "mkdir -p {params.maxbin2_bin_dir}; "
          "for bin_file in $(ls {params.maxbin2_working_dir} | grep \"\.fasta\"); "
          "do echo $bin_file; filename=$(basename $bin_file '.fasta'); bin_count=$(echo $filename | sed 's/bin\.0\+//g'); echo $bin_count; new_filename=\"bin.$bin_count.fa\"; echo $new_filename; cp {params.maxbin2_working_dir}/$bin_file {params.maxbin2_bin_dir}/$new_filename; done; "
