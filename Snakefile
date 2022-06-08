@@ -250,7 +250,7 @@ rule metabat2_binning:
          "tail -n+2 {params.maxbin2_depth_file} | cut -f1,3 > {params.maxbin2_abund_file}; "
          "echo \"{params.maxbin2_abund_file}\" > {output.maxbin2_abund_list_file}; "
          "mkdir -p {params.metabat2_bin_dir}; "
-         "cp {params.metabat2_bin_outfile_prefix}.*.fa {params.metabat2_bin_dir}; "
+         "cp {params.metabat2_bin_outfile_prefix}.[0-9]*.fa {params.metabat2_bin_dir}; "
          "echo \"metabat2_binning rule completed. Done!\" > {output.metabat2_checkpoint_file}; "
 
 rule maxbin2_binning:
