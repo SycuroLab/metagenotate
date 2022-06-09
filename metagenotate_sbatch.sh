@@ -5,7 +5,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=2-00:00:00
+#SBATCH --time=7-00:00:00
 #SBATCH --mem=5G
 #SBATCH --error=metagenotate_run.%J.err
 #SBATCH --output=metagenotate_run.%J.out
@@ -31,7 +31,7 @@ source ~/.bashrc
 # Activate the snakemake conda environment.
 conda activate snakemake
 
-snakemake --cluster-config cluster.json --cluster 'sbatch --partition={cluster.partition} --cpus-per-task={cluster.cpus-per-task} --nodes={cluster.nodes} --ntasks={cluster.ntasks} --time={cluster.time} --mem={cluster.mem} --output={cluster.output} --error={cluster.error}' --latency-wait $latency_wait --restart-times $restart_times --rerun-incomplete --jobs $num_jobs --use-conda &> $log_dir/$log_file
+snakemake --cluster-config cluster.json --cluster 'sbatch --partition={cluster.partition} --cpus-per-task={cluster.cpus-per-task} --nodes={cluster.nodes} --ntasks={cluster.ntasks} --time={cluster.time} --mem={cluster.mem} --output={cluster.output} --error={cluster.error}' --latency-wait $latency_wait --restart-times $restart_times --rerun-incomplete --keep-going --jobs $num_jobs --use-conda &> $log_dir/$log_file
 
 output_dir=$(grep "output_dir" < config.yaml | grep -v "#" | cut -d ' ' -f2 | sed 's/"//g')
 list_files=$(grep "list_files" < config.yaml | grep -v "#" | cut -d ' ' -f2 | sed 's/"//g')
