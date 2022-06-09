@@ -41,8 +41,8 @@ rule all:
         expand(config["output_dir"]+"/{sample}/initial_binning/maxbin2_abund_list.txt",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/initial_binning/maxbin2/bin.1.fa",sample=SAMPLES),
 ##        expand(config["output_dir"]+"/{sample}/initial_binning/concoct/concoct_bins/bin.0.fa",sample=SAMPLES),
-        expand(config["output_dir"]+"/{sample}/bin_refinement/metabat2_bins/bin.1.fa",sample=SAMPLES),
-        expand(config["output_dir"]+"/{sample}/bin_refinement/maxbin2_bins/bin.1.fa",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/bin_refinement/metabat2/bin.1.fa",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/bin_refinement/maxbin2/bin.1.fa",sample=SAMPLES),
 
 ##        expand(config["output_dir"]+"/{sample}/bin_refinement/concoct_bins/bin.0.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/bin_refinement/metawrap_" + str(config["completeness_thresh"]) + "_" + str(config["contamination_thresh"]) + "_bins.stats",sample=SAMPLES),
