@@ -316,7 +316,7 @@ rule metawrap_bin_refinement:
          contamination_thresh = config["contamination_thresh"]
     conda: "utils/envs/metawrap_bin_refinement_env.yaml"
     shell:
-         "checkm data setRoot {params.checkm_database};"
+         "echo {params.checkm_database} | checkm data setRoot {params.checkm_database};"
 ##         "{params.metawrap_path}/metawrap bin_refinement -o {params.sample_bin_refinement_dir} -t {params.threads} -A {params.metabat2_bins_dir} -B {params.maxbin2_bins_dir} -C {params.concoct_bins_dir} -c {params.completeness_thresh} -x {params.contamination_thresh}"
          "{params.metawrap_path}/metawrap bin_refinement -o {params.sample_bin_refinement_dir} -t {params.threads} -A {params.metabat2_bins_dir} -B {params.maxbin2_bins_dir} -c {params.completeness_thresh} -x {params.contamination_thresh}"
 
@@ -419,7 +419,7 @@ rule checkm_refined_bins:
         threads = config["checkm_threads"]
     conda: "utils/envs/checkm_env.yaml"
     shell:
-       "checkm data setRoot {params.checkm_database};"
+       "echo {params.checkm_database} | checkm data setRoot {params.checkm_database};"
        "for bin_file in $(ls {params.refined_bins_dir} | grep \"\.fa\"); "
        "do echo $bin_file; "
        "filename=$(basename $bin_file \".fa\"); "
