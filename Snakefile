@@ -309,8 +309,8 @@ rule metawrap_bin_refinement:
          checkm_database = config["checkm_database_path"],
          sample_bin_refinement_dir = os.path.join(config["output_dir"],"{sample}","bin_refinement"),
          threads = config["bin_refinement_threads"],
-         metabat2_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2","metabat2_bins"),
-         maxbin2_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2","maxbin2_bins"),
+         metabat2_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2"),
+         maxbin2_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2"),
 ##         concoct_bins_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct","concoct_bins"),
          completeness_thresh = config["completeness_thresh"],
          contamination_thresh = config["contamination_thresh"]
