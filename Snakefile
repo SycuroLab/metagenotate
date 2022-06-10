@@ -299,8 +299,8 @@ rule metawrap_bin_refinement:
 ##         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct","concoct_bins","bin.0.fa")
 
     output:
-         metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","metabat2_bins","bin.1.fa"),
-         maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","maxbin2_bins","bin.1.fa"),
+         metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","metabat2","bin.1.fa"),
+         maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","maxbin2","bin.1.fa"),
 ##         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","concoct_bins","bin.0.fa"),
          metawrap_refine_bin_stats = os.path.join(config["output_dir"],"{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins.stats"])),
          refined_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins"]), "bin.1.fa"),
