@@ -41,11 +41,12 @@ rule all:
         expand(config["output_dir"]+"/{sample}/initial_binning/maxbin2_abund_list.txt",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/initial_binning/maxbin2/bin.1.fa",sample=SAMPLES),
 ##        expand(config["output_dir"]+"/{sample}/initial_binning/concoct/concoct_bins/bin.0.fa",sample=SAMPLES),
-        expand(config["output_dir"]+"/{sample}/bin_refinement/metabat2/bin.1.fa",sample=SAMPLES),
-        expand(config["output_dir"]+"/{sample}/bin_refinement/maxbin2/bin.1.fa",sample=SAMPLES),
+#        expand(config["output_dir"]+"/{sample}/bin_refinement/metabat2/bin.1.fa",sample=SAMPLES),
+#        expand(config["output_dir"]+"/{sample}/bin_refinement/maxbin2/bin.1.fa",sample=SAMPLES),
 
 ##        expand(config["output_dir"]+"/{sample}/bin_refinement/concoct_bins/bin.0.fa",sample=SAMPLES),
-        expand(config["output_dir"]+"/{sample}/bin_refinement/metawrap_" + str(config["completeness_thresh"]) + "_" + str(config["contamination_thresh"]) + "_bins.stats",sample=SAMPLES),
+#        expand(config["output_dir"]+"/{sample}/bin_refinement/metawrap_" + str(config["completeness_thresh"]) + "_" + str(config["contamination_thresh"]) + "_bins.stats",sample=SAMPLES),
+        expand(config["output_dir"]+"/{sample}/bin_refinement/metawrap_" + str(config["completeness_thresh"]) + "_" + str(config["contamination_thresh"]) + "_bins/bin_refinement_checkpoint.txt",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/quast/transposed_report.tsv",sample=SAMPLES),
         expand(config["output_dir"]+"/{sample}/refined_bins/{sample}_bin.1/prokka/{sample}_bin.1.fna",sample=SAMPLES),
@@ -292,6 +293,7 @@ rule maxbin2_binning:
 #    shell:
 #         "{params.metawrap_path}/metawrap binning -o {params.sample_initial_binning_dir} -t {params.threads} -a {input.renamed_metagenome_assembly_file} --concoct {params.fastq_read12}"
 
+##
 rule metawrap_bin_refinement:
     input:
          metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2","bin.1.fa"),
@@ -299,11 +301,13 @@ rule metawrap_bin_refinement:
 ##         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","initial_binning","concoct","concoct_bins","bin.0.fa")
 
     output:
-         metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","metabat2","bin.1.fa"),
-         maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","maxbin2","bin.1.fa"),
+#         metabat2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","metabat2","bin.1.fa"),
+#         maxbin2_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","maxbin2","bin.1.fa"),
 ##         concoct_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","concoct_bins","bin.0.fa"),
          metawrap_refine_bin_stats = os.path.join(config["output_dir"],"{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins.stats"])),
          refined_bin_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins"]), "bin.1.fa"),
+         bin_refinement_checkpoint_file = os.path.join(config["output_dir"],"{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins"]),"bin_refinement_checkpoint.txt"),
+
     params:
          metawrap_path = config["metawrap_path"],
          checkm_database = config["checkm_database_path"],
@@ -318,7 +322,8 @@ rule metawrap_bin_refinement:
     shell:
          "echo \"{params.checkm_database}\" | checkm data setRoot; "
 ##         "{params.metawrap_path}/metawrap bin_refinement -o {params.sample_bin_refinement_dir} -t {params.threads} -A {params.metabat2_bins_dir} -B {params.maxbin2_bins_dir} -C {params.concoct_bins_dir} -c {params.completeness_thresh} -x {params.contamination_thresh}"
-         "{params.metawrap_path}/metawrap bin_refinement -o {params.sample_bin_refinement_dir} -t {params.threads} -A {params.metabat2_bins_dir} -B {params.maxbin2_bins_dir} -c {params.completeness_thresh} -x {params.contamination_thresh}"
+         "{params.metawrap_path}/metawrap bin_refinement -o {params.sample_bin_refinement_dir} -t {params.threads} -A {params.metabat2_bins_dir} -B {params.maxbin2_bins_dir} -c {params.completeness_thresh} -x {params.contamination_thresh}; "
+         "echo \"metawrap_bin_refinement rule completed. Done!\" > {output.bin_refinement_checkpoint_file}; "
 
 ## Going to recreate this so just a directory is used. I can usethe find command.
 rule rename_refined_bin_file:

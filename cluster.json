@@ -14,7 +14,7 @@
   "metaspades_assembly" :
   {
     "partition": "synergy",
-    "cpus-per-task" : 26,
+    "cpus-per-task" : 28,
     "time" : "2-00:00:00",
     "mem" : 220G,
 
@@ -46,7 +46,7 @@
   "megahit_unmapped_metaspades_reads" :
   {
     "partition": "synergy",
-    "cpus-per-task" : 26,
+    "cpus-per-task" : 28,
     "time" : "2-00:00:00",
     "mem" : 220G,
 
@@ -77,8 +77,8 @@
   },
   "checkm_refined_bins" :
   {
-    "partition": "bigmem,synergy",
-    "cpus-per-task" : 26,
+    "partition": "synergy",
+    "cpus-per-task" : 28,
     "time" : "05:00:00",
     "mem" : 240G,
     "output" : "logs/{rule}.{wildcards}.out",
@@ -86,8 +86,8 @@
   },
   "gtdbtk_refined_bins" :
   {
-    "partition": "bigmem,synergy",
-    "cpus-per-task" : 26,
+    "partition": "synergy",
+    "cpus-per-task" : 28,
     "time" : "05:00:00",
     "mem" : 240G,
     "output" : "logs/{rule}.{wildcards}.out",
