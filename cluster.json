@@ -80,7 +80,7 @@
     "partition": "synergy",
     "cpus-per-task" : 28,
     "time" : "05:00:00",
-    "mem" : 240G,
+    "mem" : 220G,
     "output" : "logs/{rule}.{wildcards}.out",
     "error" : "logs/{rule}.{wildcards}.err"
   },
@@ -89,7 +89,7 @@
     "partition": "synergy",
     "cpus-per-task" : 28,
     "time" : "05:00:00",
-    "mem" : 240G,
+    "mem" : 220G,
     "output" : "logs/{rule}.{wildcards}.out",
     "error" : "logs/{rule}.{wildcards}.err"
   },
