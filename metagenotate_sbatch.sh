@@ -49,7 +49,7 @@ cp metagenotate_sbatch.sh $snakemake_file_dir
 cp -rf logs $snakemake_file_dir
 cp -rf utils $snakemake_file_dir
 
-#python utils/scripts/parse_snakemake_command_logs.py --log_infile $log_dir/$log_file --output_dir $output_dir
+python utils/scripts/parse_snakemake_command_logs.py --log_infile $log_dir/$log_file --output_dir $output_dir
 
 echo "finished with exit code $? at: `date`"
 
