@@ -241,12 +241,12 @@ rule metabat2_binning:
          metabat2_working_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","working_dir","metabat2"),
          metabat2_bin_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","metabat2"),         
          threads = config["binning_threads"],
-         min_sequence_length = config["min_sequence_length"],
+         min_contig_length = config["min_contig_length"],
     conda: "utils/envs/metabat2_env.yaml"
     shell:
          "jgi_summarize_bam_contig_depths --outputDepth {params.metabat2_depth_file} {input.metagenome_bam_file}; "
          "mkdir -p {params.metabat2_working_dir}; "
-         "metabat2 -i {input.renamed_metagenome_assembly_file} -a {params.metabat2_depth_file} -o {params.metabat2_bin_outfile_prefix} -m {params.min_sequence_length} -t {params.threads} --unbinned; "
+         "metabat2 -i {input.renamed_metagenome_assembly_file} -a {params.metabat2_depth_file} -o {params.metabat2_bin_outfile_prefix} -m {params.min_contig_length} -t {params.threads} --unbinned; "
          "jgi_summarize_bam_contig_depths --outputDepth {params.maxbin2_depth_file} --noIntraDepthVariance {input.metagenome_bam_file}; "
          "tail -n+2 {params.maxbin2_depth_file} | cut -f1,3 > {params.maxbin2_abund_file}; "
          "echo \"{params.maxbin2_abund_file}\" > {output.maxbin2_abund_list_file}; "
@@ -268,12 +268,12 @@ rule maxbin2_binning:
          maxbin2_bin_dir = os.path.join(config["output_dir"],"{sample}","initial_binning","maxbin2"),
          maxbin2_path = config["maxbin2_path"], 
          threads = config["binning_threads"],
-         min_sequence_length = config["min_sequence_length"],
+         min_contig_length = config["min_contig_length"],
          markers = config["maxbin2_markers"],
     conda: "utils/envs/maxbin2_env.yaml"
     shell:
          "mkdir -p {params.maxbin2_working_dir}; "         
-         "perl {params.maxbin2_path}/run_MaxBin.pl -contig {input.renamed_metagenome_assembly_file} -markerset {params.markers} -thread {params.threads} -min_contig_length {params.min_sequence_length} -out {params.maxbin2_bin_outfile_prefix} -abund_list {input.maxbin2_abund_list_file}; "
+         "perl {params.maxbin2_path}/run_MaxBin.pl -contig {input.renamed_metagenome_assembly_file} -markerset {params.markers} -thread {params.threads} -min_contig_length {params.min_contig_length} -out {params.maxbin2_bin_outfile_prefix} -abund_list {input.maxbin2_abund_list_file}; "
          "mkdir -p {params.maxbin2_bin_dir}; "
          "for bin_file in $(ls {params.maxbin2_working_dir} | grep \"\.fasta\"); "
          "do echo $bin_file; filename=$(basename $bin_file '.fasta'); bin_count=$(echo $filename | sed 's/bin\.0\+//g'); echo $bin_count; new_filename=\"bin.$bin_count.fa\"; echo $new_filename; cp {params.maxbin2_working_dir}/$bin_file {params.maxbin2_bin_dir}/$new_filename; done; "

@@ -28,16 +28,16 @@ metawrap_path: "/bulk/IMCshared_bulk/shared/shared_software/metaWRAP/bin"
 # Number of threads for the metawrap assembly module.
 assembler_threads: 28
 
-# Minumum contig length.
-min_contig_length: 500
-
 # Memory in GB.
 memory_in_gb: 220
 
 ## Filter by length
 
-# 15kb
-min_sequence_length: 1500
+# Minimum sequence length of the final metagenome assembly file. Default: 500
+min_sequence_length: 500
+
+# Minumum contig length for binning programs.
+min_contig_length: 1500
 
 ## metagenome quast parameters.
 
