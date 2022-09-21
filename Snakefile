@@ -459,16 +459,16 @@ rule gtdbtk_refined_bins:
        "gtdbtk classify_wf --genome_dir $gtdbtk_bin_dir --extension \"fa\" --cpus {params.threads} --out_dir $gtdbtk_bin_dir; "
        "done"
 	   
-rule merge_metagenotate_data:
-    input:
-        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
-    output:
-        gtdbtk_refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1","gtdbtk","gtdbtk.bac120.summary.tsv")
-    params:
-       input_dir = config["output_dir"],
-       output_dir = os.path.join(config["output_dir"],"metadata_files")
-    conda: "utils/envs/gtdbtk_env.yaml"
-    shell:
-       "python utils/scripts/merge_metagenotate_data.py --input_dir {params.input_dir} --output_dir {params.output_dir}"
+#rule merge_metagenotate_data:
+#    input:
+#        refined_bin_file = os.path.join(config["output_dir"],"{sample}","refined_bins","{sample}_bin.1.fa")
+#    output:
+#		merged_metadata_checkpoint_file = os.path.join(config["output_dir"],"metadata_files","merged_metadata_checkpoint.txt"),
+#    params:
+#       input_dir = config["output_dir"],
+#       output_dir = os.path.join(config["output_dir"],"metadata_files")
+#    conda: "utils/envs/gtdbtk_env.yaml"
+#    shell:
+#       "python utils/scripts/merge_metagenotate_data.py --input_dir {params.input_dir} --output_dir {params.output_dir}"
 	   
 
