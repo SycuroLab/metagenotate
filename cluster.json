@@ -15,7 +15,7 @@
   {
     "partition": "synergy,cpu2022",
     "cpus-per-task" : 28,
-    "time" : "2-00:00:00",
+    "time" : "7-00:00:00",
     "mem" : 220G,
 
   },
@@ -79,7 +79,7 @@
   {
     "partition": "synergy,cpu2022",
     "cpus-per-task" : 28,
-    "time" : "1-00:00:00",
+    "time" : "2-00:00:00",
     "mem" : 220G,
     "output" : "logs/{rule}.{wildcards}.out",
     "error" : "logs/{rule}.{wildcards}.err"
@@ -88,7 +88,7 @@
   {
     "partition": "synergy,cpu2022",
     "cpus-per-task" : 28,
-    "time" : "1-00:00:00",
+    "time" : "2-00:00:00",
     "mem" : 220G,
     "output" : "logs/{rule}.{wildcards}.out",
     "error" : "logs/{rule}.{wildcards}.err"
