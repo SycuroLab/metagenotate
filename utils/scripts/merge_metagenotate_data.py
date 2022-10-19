@@ -84,7 +84,7 @@ def parse_prokka_data(prokka_infile):
             i += 1
     print(prokka_list)
     
-    (num_contigs, num_bases, num_CDS, num_misc_RNA, num_rRNA, num_repeat_region, num_tRNA, num_tmRNA) = ("","","","","","","","")
+    (num_contigs, num_bases, num_CDS, num_misc_RNA, num_rRNA, num_repeat_region, num_tRNA, num_tmRNA) = ("0","0","0","0","0","0","0","0")
     if("contigs" in prokka_list):
         num_contigs = prokka_list["contigs"]
     if("bases" in prokka_list):
@@ -180,7 +180,7 @@ gtdbtk_bin_tsv_writer.writerow(["user_genome","classification","fastani_referenc
 merged_bin_tsv_outfile = os.path.join(output_dir, "all_merged_bin_metadata.tsv")
 merged_bin_tsv_output_file = open(merged_bin_tsv_outfile, 'w+')
 merged_bin_tsv_writer = csv.writer(merged_bin_tsv_output_file, delimiter='\t', quotechar='', quoting=csv.QUOTE_NONE)
-merged_bin_tsv_writer.writerow(["Genome ID", "GTDB-tk Classification","Total Number of Contigs","Largest Contig","Total Length","GC (%)","N50","CDS","Completeness","Contamination","Strain heterogeneity","GTDB-tk Lineage","FastANI Reference"," FastANI Reference Radius","FastANI Taxonomy","FastANI ANI","FastANI AF","Closest Placement Reference","Closest Placement Radius","Closest Placement Taxonomy","Closest Placement ANI","Closest Placement AF","pplacer Taxonomy","Classification Method","Note","Other Related References ( Genome ID, Species Name, Radius, ANI, AF )","MSA Percent","Translation Table","Red Value","Warnings"])
+merged_bin_tsv_writer.writerow(["MAG ID", "Metagenome ID", "GTDB-tk Classification","Total Number of Contigs","Largest Contig","Total Length","GC (%)","N50","CDS","Completeness","Contamination","Strain heterogeneity","GTDB-tk Lineage","FastANI Reference"," FastANI Reference Radius","FastANI Taxonomy","FastANI ANI","FastANI AF","Closest Placement Reference","Closest Placement Radius","Closest Placement Taxonomy","Closest Placement ANI","Closest Placement AF","pplacer Taxonomy","Classification Method","Note","Other Related References ( Genome ID, Species Name, Radius, ANI, AF )","MSA Percent","Translation Table","Red Value","Warnings"])
 
 dirs = [ f.path for f in os.scandir(input_dir) if f.is_dir() ]
 for assembly_dir in dirs:
@@ -235,8 +235,17 @@ for assembly_dir in dirs:
         print(checkm_bin_infile)
         checkm_bin_data = parse_checkm_data(checkm_bin_infile)
         checkm_bin_tsv_writer.writerow(checkm_bin_data)
+        
+        gtdbtk_bin_infile = ""
+        
+        gtdbtk_bac_bin_infile = os.path.join(bin_dir,"gtdbtk/gtdbtk.bac120.summary.tsv")
+        gtdbtk_ar_bin_infile = os.path.join(bin_dir,"gtdbtk/gtdbtk.ar122.summary.tsv")
+        
+        if(os.path.exists(gtdbtk_bac_bin_infile)):
+            gtdbtk_bin_infile = gtdbtk_bac_bin_infile
+        elif(os.path.exists(gtdbtk_ar_bin_infile)):
+            gtdbtk_bin_infile = gtdbtk_ar_bin_infile
 
-        gtdbtk_bin_infile = os.path.join(bin_dir,"gtdbtk/gtdbtk.bac120.summary.tsv")
         print(gtdbtk_bin_infile)
         gtdbtk_bin_data = parse_gtdbtk_data(gtdbtk_bin_infile)
         gtdbtk_bin_tsv_writer.writerow(gtdbtk_bin_data)
@@ -254,5 +263,5 @@ for assembly_dir in dirs:
 
         #sys.exit()
 
-        merged_bin_tsv_writer.writerow([genome_name,taxonomy,num_contigs,largest_contig,total_length,percent_gc,n50,num_CDS,completeness,contamination,strain_heterogeneity,classification,fastani_reference,fastani_reference_radius,fastani_taxonomy,fastani_ani,fastani_af,closest_placement_reference,closest_placement_radius,closest_placement_taxonomy,closest_placement_ani,closest_placement_af,pplacer_taxonomy,classification_method,note,other_related_references,msa_percent,translation_table,red_value,warnings])
+        merged_bin_tsv_writer.writerow([bin_name,genome_name,taxonomy,num_contigs,largest_contig,total_length,percent_gc,n50,num_CDS,completeness,contamination,strain_heterogeneity,classification,fastani_reference,fastani_reference_radius,fastani_taxonomy,fastani_ani,fastani_af,closest_placement_reference,closest_placement_radius,closest_placement_taxonomy,closest_placement_ani,closest_placement_af,pplacer_taxonomy,classification_method,note,other_related_references,msa_percent,translation_table,red_value,warnings])
 
