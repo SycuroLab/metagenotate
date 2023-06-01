@@ -31,6 +31,9 @@ source ~/.bashrc
 # Activate the snakemake conda environment.
 conda activate snakemake
 
+# Unlock snakemake folder as a fail safe.
+snakemake --unlock
+
 snakemake --cluster-config cluster.json --cluster 'sbatch --partition={cluster.partition} --cpus-per-task={cluster.cpus-per-task} --nodes={cluster.nodes} --ntasks={cluster.ntasks} --time={cluster.time} --mem={cluster.mem} --output={cluster.output} --error={cluster.error}' --latency-wait $latency_wait --restart-times $restart_times --rerun-incomplete --keep-going --jobs $num_jobs --use-conda &> $log_dir/$log_file
 
 output_dir=$(grep "output_dir" < config.yaml | grep -v "#" | cut -d ' ' -f2 | sed 's/"//g')
@@ -49,7 +52,7 @@ cp metagenotate_sbatch.sh $snakemake_file_dir
 cp -rf logs $snakemake_file_dir
 cp -rf utils $snakemake_file_dir
 
-python utils/scripts/parse_snakemake_command_logs.py --log_infile $log_dir/$log_file --output_dir $output_dir
+#python utils/scripts/parse_snakemake_command_logs.py --log_infile $log_dir/$log_file --output_dir $output_dir
 
 echo "finished with exit code $? at: `date`"
 
