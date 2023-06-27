@@ -29,7 +29,7 @@ echo "started at: `date`"
 source ~/.bashrc
 
 # Activate the snakemake conda environment.
-conda activate snakemake_env
+conda activate snakemake
 
 # Unlock snakemake folder as a fail safe.
 snakemake --unlock
