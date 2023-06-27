@@ -7,8 +7,8 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --time=7-00:00:00
 #SBATCH --mem=5G
-#SBATCH --error=metagenotate_run.%J.err
-#SBATCH --output=metagenotate_run.%J.out
+#SBATCH --error=run_metagenotate.%J.err
+#SBATCH --output=run_metagenotate.%J.out
 
 
 log_dir="$(pwd)"
@@ -29,7 +29,7 @@ echo "started at: `date`"
 source ~/.bashrc
 
 # Activate the snakemake conda environment.
-conda activate snakemake
+conda activate snakemake_env
 
 # Unlock snakemake folder as a fail safe.
 snakemake --unlock

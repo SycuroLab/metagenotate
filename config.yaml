@@ -2,17 +2,12 @@
 # * Parameters for metagenotate pipeline *
 # ***************************************
 
-#list_files: "/home/kevin.muirhead/metagenotate/sample_list.txt"
-
-#list_files: "/work/sycuro_lab/kevin/reworking_metagenotate/PD_306_Novaseq_metagenotate/metagenotate/PD_306_samples_list.txt"
-list_files: "/work/sycuro_lab/kevin/reworking_metagenotate/PD_306_Novaseq_metagenotate/metagenotate/PD_no_blnk_Zymo_samples_list.txt"
-
-#list_files: "/work/sycuro_lab/kevin/reworking_metagenotate/PD_306_Novaseq_metagenotate/metagenotate/sample_list.txt"
+list_files: "/bulk/sycuro_bulk/lsycuro_labshare/kevin/kghs_metagenomics_2023/metagenotate/utils/ref_list_files.txt"
 
 # Path to sequences
-input_dir: "/bulk/IMCshared_bulk/sycuro_shared_projects/PD_306_Novaseq/bmtagger"
+input_dir: "/bulk/sycuro_bulk/lsycuro_labshare/kevin/kghs_metagenomics_2023/metqc/output/bmtagger/"
 
-output_dir: "/bulk/IMCshared_bulk/sycuro_shared_projects/PD_306_Novaseq/metagenotate"
+output_dir: "/bulk/sycuro_bulk/lsycuro_labshare/kevin/kghs_metagenomics_2023/metagenotate/output"
 
 # Suffix for forward reads.
 forward_read_suffix: "_bmtagged_1.fastq"
@@ -34,7 +29,7 @@ memory_in_gb: 220
 ## Filter by length
 
 # Minimum sequence length of the final metagenome assembly file. Default: 500
-min_sequence_length: 500
+min_scaffold_length: 500
 
 # Minumum contig length for binning programs.
 min_contig_length: 1500
