@@ -113,20 +113,20 @@ sequence_entries = {}
 for line in gff_input_file.readlines():
     #print(line)
     
-    # Break out of loop if "##FASTA" or ">" start of fasta sequence.
-    if(("##FASTA" in line) or (">" in line)):
+    # Break out of loop if "##FASTA".
+    if(("##FASTA" in line)):
         break
         
     # If not comment lines and GFF file content.
     if(not("##" in line)):
-        #print(line.strip())
-        line = line.strip()
+        
+        line = line.strip("\n")
         (sequence_id, source, feature_type, start, end, score, strand, frame, attribute) = line.split("\t")
         #NZ_CP046311.1 Prodigal:002006 CDS 533 2956 . - 0 ID=FLKKEMPL_00001;Name=spoIIIE;db_xref=COG:COG1674;gene=spoIIIE;inference=ab initio prediction:Prodigal:002006,similar to AA sequence:UniProtKB:P21458;feature_id=FLKKEMPL_00001;product=DNA translocase SpoIIIE
-        print(sequence_id, source, feature_type, start, end, score, strand, frame, attribute)
+        #print(sequence_id, source, feature_type, start, end, score, strand, frame, attribute)
         
-        print(feature_type)
-        print(attribute)
+        #print(feature_type)
+        #print(attribute)
         
         #ID=FLKKEMPL_00001;Name=spoIIIE;db_xref=COG:COG1674;gene=spoIIIE;inference=ab initio prediction:Prodigal:002006,similar to AA sequence:UniProtKB:P21458;feature_id=FLKKEMPL_00001;product=DNA translocase SpoIIIE
         # Split by ';' delimiter and make a dictionary based on the attribute names.
@@ -136,7 +136,7 @@ for line in gff_input_file.readlines():
             # split attributes by the '=' symbol delimiter.
             (key,value) = attribute.split("=")
             attributes_metadata[str(key)] = value
-        print(attributes_metadata)
+        #print(attributes_metadata)
         
         
         
@@ -182,7 +182,7 @@ for line in gff_input_file.readlines():
                         # Get the sequence string by sequence id from the sequence dictionary.
                         feature_sequence = str(sequence_dict[sequence_id][int(start_index):int(end_index)].seq)
                         #feature_sequence = sequence[int(start):int(end)]
-                        print(strand)
+#                        print(strand)
                         if(strand == "-"):
                             feature_sequence = str(Seq(feature_sequence).reverse_complement())
                         #print(feature_sequence)
@@ -217,7 +217,7 @@ for marker in markers:
                 sequence_length = len(marker_sequence)
 
                 header = "{feature_id} scaffold_id={sequence_id} locus_tag={feature_id} marker={marker} source={source} length={sequence_length}".format(sequence_id=sequence_id,feature_id=feature_id,sequence_length=sequence_length,marker=marker,source=source)
-                print(header)
+#                print(header)
                 record = SeqRecord(
                     Seq(str(marker_sequence)),
                     id=header,
