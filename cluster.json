@@ -2,7 +2,7 @@
   "__default__" :
   {
     "name": "metagenotate.{rule}.{wildcards}",
-    "partition": "synergy,cpu2013,cpu2019,cpu2021,cpu2022",
+    "partition": "synergy,cpu2019,cpu2021,cpu2022",
     "nodes": 1,
     "ntasks": 1,
     "cpus-per-task": 14,
@@ -74,6 +74,15 @@
     "time" : "1-00:00:00",
     "mem" : 9G,
 
+  },
+  "metawrap_bin_refinement" :
+  {
+    "partition": "synergy,cpu2022",
+    "cpus-per-task" : 28,
+    "time" : "2-00:00:00",
+    "mem" : 220G,
+    "output" : "logs/{rule}.{wildcards}.out",
+    "error" : "logs/{rule}.{wildcards}.err"
   },
   "checkm_refined_bins" :
   {
