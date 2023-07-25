@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name="metagenotate_sbatch"
-#SBATCH --partition=cpu2013,parallel,single,lattice,cpu2022,cpu2021,cpu2019,synergy
+#SBATCH --partition=cpu2023,cpu2022,cpu2021,cpu2019,synergy
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
