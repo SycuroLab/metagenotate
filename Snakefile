@@ -39,7 +39,7 @@ rule all:
 #        expand(config["output_dir"]+"/metagenomes/{sample}/bin_refinement/maxbin2/bin.1.fa",sample=SAMPLES),
 
 ##        expand(config["output_dir"]+"/metagenomes/{sample}/bin_refinement/concoct_bins/bin.0.fa",sample=SAMPLES),
-#        expand(config["output_dir"]+"/metagenomes/{sample}/bin_refinement/metawrap_" + str(config["completeness_thresh"]) + "_" + str(config["contamination_thresh"]) + "_bins.stats",sample=SAMPLES),
+        expand(config["output_dir"]+"/metagenomes/{sample}/bin_refinement/metawrap_" + str(config["completeness_thresh"]) + "_" + str(config["contamination_thresh"]) + "_bins.stats",sample=SAMPLES),
         expand(config["output_dir"]+"/metagenomes/{sample}/bin_refinement/metawrap_" + str(config["completeness_thresh"]) + "_" + str(config["contamination_thresh"]) + "_bins/bin_refinement_checkpoint.txt",sample=SAMPLES),
         expand(config["output_dir"]+"/metagenomes/{sample}/refined_bins/{sample}_bin.1.fa",sample=SAMPLES),
         expand(config["output_dir"]+"/metagenomes/{sample}/refined_bins/{sample}_bin.1/quast/transposed_report.tsv",sample=SAMPLES),
@@ -235,7 +235,7 @@ rule metawrap_bin_refinement:
 #         maxbin2_bin_file = os.path.join(config["output_dir"],"metagenomes","{sample}","bin_refinement","maxbin2","bin.1.fa"),
 ##         concoct_bin_file = os.path.join(config["output_dir"],"metagenomes","{sample}","bin_refinement","concoct_bins","bin.0.fa"),
          metawrap_refine_bin_stats = os.path.join(config["output_dir"],"metagenomes","{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins.stats"])),
-         refined_bin_file = os.path.join(config["output_dir"],"metagenomes","{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins"]), "bin.1.fa"),
+#         refined_bin_file = os.path.join(config["output_dir"],"metagenomes","{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins"]), "bin.1.fa"),
          bin_refinement_checkpoint_file = os.path.join(config["output_dir"],"metagenomes","{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins"]),"bin_refinement_checkpoint.txt"),
 
     params:
@@ -258,7 +258,8 @@ rule metawrap_bin_refinement:
 ## Going to recreate this so just a directory is used. I can use the find command.
 rule rename_refined_bin_file:
     input:
-        refined_bin_file = os.path.join(config["output_dir"],"metagenomes","{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins"]), "bin.1.fa")
+#        refined_bin_file = os.path.join(config["output_dir"],"metagenomes","{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins"]), "bin.1.fa")
+        bin_refinement_checkpoint_file = os.path.join(config["output_dir"],"metagenomes","{sample}","bin_refinement","_".join(["metawrap",str(config["completeness_thresh"]),str(config["contamination_thresh"]),"bins"]),"bin_refinement_checkpoint.txt"),
     output:
         renamed_refined_bin_file = os.path.join(config["output_dir"],"metagenomes","{sample}","refined_bins","{sample}_bin.1.fa")
     params:
