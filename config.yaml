@@ -20,8 +20,11 @@ reverse_read_suffix: "_bmtagged_2.fastq"
 
 metawrap_path: "/bulk/IMCshared_bulk/shared/shared_software/metaWRAP/bin"
 
-# Number of threads for the metawrap assembly module.
+# Number of threads for the metaspades assembler.
 assembler_threads: 28
+
+# The phred offset value for the metaspades assembler.
+assembler_phred_offset: 33
 
 # Memory in GB.
 memory_in_gb: 220

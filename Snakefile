@@ -50,18 +50,18 @@ rule all:
         expand(config["output_dir"]+"/metagenomes/{sample}/refined_bins/{sample}_bin.1/gtdbtk/gtdbtk.bac120.summary.tsv",sample=SAMPLES)
 
 # Using this because we are merging two lanes.
-rule merge_reads:
-    input:
-        r11 = config["input_dir"]+"{sample}_L001"+config["forward_read_suffix"],
-        r12 = config["input_dir"]+"{sample}_L001"+config["reverse_read_suffix"],
-        r21 = config["input_dir"]+"{sample}_L002"+config["forward_read_suffix"],
-        r22 = config["input_dir"]+"{sample}_L002"+config["reverse_read_suffix"]
-    output:
-        r1 = os.path.join(config["input_dir"],"{sample}"+config["forward_read_suffix"]),
-        r2 = os.path.join(config["input_dir"],"{sample}"+config["reverse_read_suffix"])
-    shell:
-        "cat {input.r11} {input.r21} > {output.r1}; "
-        "cat {input.r12} {input.r22} > {output.r2}; "
+#rule merge_reads:
+#    input:
+#        r11 = config["input_dir"]+"{sample}_L001"+config["forward_read_suffix"],
+#        r12 = config["input_dir"]+"{sample}_L001"+config["reverse_read_suffix"],
+#        r21 = config["input_dir"]+"{sample}_L002"+config["forward_read_suffix"],
+#        r22 = config["input_dir"]+"{sample}_L002"+config["reverse_read_suffix"]
+#    output:
+#        r1 = os.path.join(config["input_dir"],"{sample}"+config["forward_read_suffix"]),
+#        r2 = os.path.join(config["input_dir"],"{sample}"+config["reverse_read_suffix"])
+#    shell:
+#        "cat {input.r11} {input.r21} > {output.r1}; "
+#        "cat {input.r12} {input.r22} > {output.r2}; "
 
 rule metaspades_assembly:
     input:
@@ -72,10 +72,11 @@ rule metaspades_assembly:
     params:
         memory_in_gb = config["memory_in_gb"],
         threads = config["assembler_threads"],
+        phred_offset = config["assembler_phred_offset"],
         sample_assembly_dir = os.path.join(config["output_dir"],"metagenomes","{sample}","assembly","metaspades")
     conda: "utils/envs/metaspades_env.yaml"
     shell:
-        "metaspades.py -t {params.threads} -m {params.memory_in_gb} -o {params.sample_assembly_dir} -1 {input.fastq_read1} -2 {input.fastq_read2}"
+        "metaspades.py -t {params.threads} -m {params.memory_in_gb} --phred-offset {params.phred_offset} -o {params.sample_assembly_dir} -1 {input.fastq_read1} -2 {input.fastq_read2}"
 
 rule filter_sequences_by_length:
     input:
